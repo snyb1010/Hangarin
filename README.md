@@ -1,6 +1,6 @@
 # PSUSphere
 
-A web-based Student Organization Management System built with Django, designed to help Pangasinan State University (PSU) manage student organizations, members, programs, and colleges in one centralized platform.
+A web-based Student Organization Management System built with Django, designed to help Palawan State University (PSU) manage student organizations, members, programs, and colleges in one centralized platform.
 
 ---
 
@@ -24,5 +24,5 @@ PSUSphere is a Django-powered web application that streamlines the administratio
 
 ## Authors
 
-- **Rivera** 
-- **Estoya**
+- **Rivera, Vince Alshie** 
+- **Estoya, Ethan Laureen**
