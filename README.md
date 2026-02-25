@@ -12,11 +12,14 @@ PSUSphere is a Django-powered web application that streamlines the administratio
 
 ## Features
 
-- **College Management** – Add, update, and manage the list of colleges within the university.
-- **Program Management** – Manage degree programs and associate them with their respective colleges.
-- **Student Records** – Maintain student profiles including student ID, name, and enrolled program.
-- **Organization Management** – Create and manage student organizations with descriptions and college affiliations.
-- **Organization Membership Tracking** – Record and monitor which students belong to which organizations, including their date joined.
+- **College Management** – List, add, edit, and delete colleges within the university.
+- **Program Management** – List, add, edit, and delete degree programs linked to colleges.
+- **Student Records** – List, add, edit, and delete student profiles including student ID, name, and enrolled program.
+- **Organization Management** – List, add, edit, and delete student organizations with college affiliations.
+- **Organization Membership Tracking** – List, add, edit, and delete organization memberships including date joined.
+- **Web-Based CRUD Views** – Full ListView, CreateView, UpdateView, and DeleteView for all models via a responsive dashboard UI.
+- **Sidebar Navigation** – Quick access to Organization, Org. Members, Student, College, and Program pages.
+- **Pagination** – All list views are paginated (5 records per page).
 - **Django Admin Interface** – Full CRUD operations with search, filtering, and list display via Django's built-in admin panel.
 - **Timestamps** – Automatic `created_at` and `updated_at` tracking on all records.
 
@@ -24,14 +27,16 @@ PSUSphere is a Django-powered web application that streamlines the administratio
 
 ## Tech Stack
 
-| Technology | Version |
-|------------|---------|
-| Python     | 3.x     |
-| Django     | 6.0.2   |
-| SQLite     | (default Django DB) |
-| Faker      | 40.5.1  |
-| sqlparse   | 0.5.5   |
-| asgiref    | 3.11.1  |
+| Technology           | Version |
+|----------------------|---------|
+| Python               | 3.x     |
+| Django               | 6.0.2   |
+| SQLite               | (default Django DB) |
+| django-widget-tweaks | 1.5.1   |
+| Faker                | 40.5.1  |
+| sqlparse             | 0.5.5   |
+| asgiref              | 3.11.1  |
+| tzdata               | 2025.3  |
 
 ---
 
