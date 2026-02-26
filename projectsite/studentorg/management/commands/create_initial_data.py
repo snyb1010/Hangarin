@@ -7,6 +7,13 @@ class Command(BaseCommand):
     help = 'Create actual initial data for the application'
 
     def handle(self, *args, **kwargs):
+        OrgMember.objects.all().delete()
+        Student.objects.all().delete()
+        Organization.objects.all().delete()
+        Program.objects.all().delete()
+        College.objects.all().delete()
+        self.stdout.write(self.style.WARNING('Existing data cleared.'))
+
         self.create_colleges()
         self.create_programs()
         self.create_organizations()
