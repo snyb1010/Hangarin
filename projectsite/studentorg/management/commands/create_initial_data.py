@@ -56,14 +56,14 @@ class Command(BaseCommand):
 
     def create_organizations(self):
         orgs = [
-            ('SITE', 'College of Science'),
-            ('ACS', 'College of Science'),
+            ('ACS', 'College of Science', 'Association of Computer Scientists'),
+            ('SITE', 'College of Science', 'Society of Information Technology Enthusiasts'),
         ]
-        for org_name, college_name in orgs:
+        for org_name, college_name, description in orgs:
             college = College.objects.filter(college_name=college_name).first()
             Organization.objects.get_or_create(
                 name=org_name,
-                defaults={'college': college, 'description': ''}
+                defaults={'college': college, 'description': description}
             )
         self.stdout.write(self.style.SUCCESS('Organizations created successfully.'))
 
