@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.views.generic import RedirectView
 from studentorg.views import (
     HomePageView,
     OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView,
@@ -28,6 +29,8 @@ from studentorg import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('', include('django.contrib.auth.urls')),
+    path('index.html', RedirectView.as_view(url='/', permanent=True)),
     path('', views.HomePageView.as_view(), name='home'),
     # Organization
     path('organization_list', OrganizationList.as_view(), name='organization-list'),
