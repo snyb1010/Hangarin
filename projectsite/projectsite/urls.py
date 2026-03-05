@@ -31,6 +31,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('django.contrib.auth.urls')),
     path('index.html', RedirectView.as_view(url='/', permanent=True)),
+    path("accounts/", include("allauth.urls")),
     path('', views.HomePageView.as_view(), name='home'),
     # Organization
     path('organization_list', OrganizationList.as_view(), name='organization-list'),
