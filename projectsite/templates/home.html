@@ -83,6 +83,122 @@
                 </div>
             </div>
         </div>
+
+        <!-- Second Row: Recent Members + Top Organizations -->
+        <div class="row mt-3">
+
+            <!-- Recent Members Table -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Recently Joined Members</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Student</th>
+                                        <th>Organization</th>
+                                        <th>Date Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for member in recent_members %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ member.student.firstname }} {{ member.student.lastname }}</td>
+                                        <td>{{ member.organization.name }}</td>
+                                        <td>{{ member.date_joined|date:"M d, Y" }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No members yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'orgmember-list' %}" class="btn btn-primary btn-sm">
+                            View All Members
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Organizations -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Top Organizations by Members</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for org in top_organizations %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span>
+                                    <i class="la la-institution mr-1 text-primary"></i>
+                                    {{ org.name }}
+                                </span>
+                                <span class="badge badge-primary badge-pill">{{ org.member_count }}</span>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item text-muted">No organizations found.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'organization-list' %}" class="btn btn-primary btn-sm">
+                            View All Organizations
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Third Row: Quick Links -->
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Quick Links</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <a href="{% url 'student-list' %}" class="btn btn-warning btn-block py-3">
+                                    <i class="la la-users la-2x d-block mb-1"></i>
+                                    Students
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <a href="{% url 'organization-list' %}" class="btn btn-danger btn-block py-3">
+                                    <i class="la la-institution la-2x d-block mb-1"></i>
+                                    Organizations
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <a href="{% url 'program-list' %}" class="btn btn-success btn-block py-3">
+                                    <i class="la la-book la-2x d-block mb-1"></i>
+                                    Programs
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <a href="{% url 'college-list' %}" class="btn btn-primary btn-block py-3">
+                                    <i class="la la-graduation-cap la-2x d-block mb-1"></i>
+                                    Colleges
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

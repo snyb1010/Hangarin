@@ -6,6 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<title>{% block title %}PSUSphere{% endblock %}</title>
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+	<link rel="icon" type="image/jpeg" href="{% static 'img/PSU.jpg' %}">
 	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
 	<link rel="stylesheet" href="{% static 'css/ready.css' %}">
@@ -15,7 +16,8 @@
 	<div class="wrapper">
 		<div class="main-header">
 			<div class="logo-header">
-				<a href="{% url 'home' %}" class="logo">
+				<a href="{% url 'home' %}" class="logo" style="display:flex; align-items:center; gap:8px;">
+					<img src="{% static 'img/PSU.jpg' %}" alt="PSU Logo" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
 					PSUSphere
 				</a>
 				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,14 +107,14 @@
 							</ul>
 						</li>
 						<li class="nav-item dropdown">
-							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="{% static 'img/profile.jpg' %}" alt="user-img" width="36" class="img-circle"><span >Hizrian</span></span> </a>
+							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="{% static 'img/profile.jpg' %}" alt="user-img" width="36" class="img-circle"><span >{{ request.user.get_full_name|default:request.user.username }}</span></span> </a>
 							<ul class="dropdown-menu dropdown-user">
 								<li>
 									<div class="user-box">
 										<div class="d-flex align-items-center">
 											<div class="flex-col u-img"><img src="{% static 'img/profile.jpg' %}" alt="user"></div>
 											<div class="u-text">
-												<h4>Hizrian</h4>
+												<h4>{{ request.user.get_full_name|default:request.user.username }}</h4>
 												<p class="text-muted mb-0">Administrator</p>
 											</div>
 										</div>
@@ -142,7 +144,7 @@
 						<div class="info">
 							<a class="" data-toggle="collapse" href="#collapseExample" aria-expanded="true">
 								<span>
-									Hizrian
+										{{ request.user.get_full_name|default:request.user.username }}
 									<span class="user-level">Administrator</span>
 									<span class="caret"></span>
 								</span>

@@ -4,12 +4,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from studentorg.models import Organization, OrgMember, Student, College, Program
 from studentorg.forms import OrganizationForm, OrgMemberForm, StudentForm, CollegeForm, ProgramForm
 from django.urls import reverse_lazy
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class HomePageView(ListView):
+class HomePageView(LoginRequiredMixin, ListView):
     model = Organization
     context_object_name = 'home'
     template_name = "home.html"
@@ -31,6 +31,13 @@ class HomePageView(ListView):
         context["students_joined_this_year"] = count
         context["total_organizations"] = Organization.objects.count()
         context["total_programs"] = Program.objects.count()
+        context["recent_members"] = OrgMember.objects.select_related(
+            "student", "organization"
+        ).order_by("-date_joined")[:8]
+        context["top_organizations"] = (
+            Organization.objects.annotate(member_count=Count("orgmember"))
+            .order_by("-member_count")[:5]
+        )
         return context
 
 
