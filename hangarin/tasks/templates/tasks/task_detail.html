@@ -20,10 +20,15 @@
 
 <section class="card">
     <h3>Subtasks</h3>
+    <p><a class="btn" href="{% url 'tasks:subtask_create' task.pk %}">+ Add Subtask</a></p>
     {% if task.subtask_set.all %}
         <ul>
             {% for subtask in task.subtask_set.all %}
-                <li>{{ subtask.title }} - {{ subtask.status }}</li>
+                <li>
+                    {{ subtask.title }} - {{ subtask.status }}
+                    (<a href="{% url 'tasks:subtask_update' subtask.pk %}">Edit</a> |
+                    <a href="{% url 'tasks:subtask_delete' subtask.pk %}">Delete</a>)
+                </li>
             {% endfor %}
         </ul>
     {% else %}
@@ -33,10 +38,15 @@
 
 <section class="card">
     <h3>Notes</h3>
+    <p><a class="btn" href="{% url 'tasks:note_create' task.pk %}">+ Add Note</a></p>
     {% if task.note_set.all %}
         <ul>
             {% for note in task.note_set.all %}
-                <li>{{ note.content }}</li>
+                <li>
+                    {{ note.content }}
+                    (<a href="{% url 'tasks:note_update' note.pk %}">Edit</a> |
+                    <a href="{% url 'tasks:note_delete' note.pk %}">Delete</a>)
+                </li>
             {% endfor %}
         </ul>
     {% else %}

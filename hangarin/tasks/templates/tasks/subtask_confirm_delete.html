@@ -1,0 +1,15 @@
+{% extends 'tasks/base.html' %}
+{% block title %}Delete Subtask{% endblock %}
+{% block content %}
+<section class="card">
+    <h2 style="margin-top:0;">Delete Subtask</h2>
+    <p>Are you sure you want to delete <strong>{{ subtask.title }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="actions">
+            <button class="btn danger" type="submit">Yes, delete</button>
+            <a class="btn secondary" href="{% url 'tasks:task_detail' subtask.task.pk %}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

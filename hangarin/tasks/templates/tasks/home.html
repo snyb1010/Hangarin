@@ -2,12 +2,26 @@
 {% block title %}Hangarin | Home{% endblock %}
 {% block content %}
 <section class="card">
+    <div class="stats" style="margin-bottom:14px;">
+        <div class="stat"><strong>{{ total_tasks }}</strong><span class="muted">Total Tasks</span></div>
+        <div class="stat"><strong>{{ pending_tasks }}</strong><span class="muted">Pending</span></div>
+        <div class="stat"><strong>{{ in_progress_tasks }}</strong><span class="muted">In Progress</span></div>
+        <div class="stat"><strong>{{ completed_tasks }}</strong><span class="muted">Completed</span></div>
+        <div class="stat"><strong>{{ total_subtasks }}</strong><span class="muted">Subtasks</span></div>
+        <div class="stat"><strong>{{ total_notes }}</strong><span class="muted">Notes</span></div>
+    </div>
     <form method="get" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
         <input type="text" name="q" value="{{ query }}" placeholder="Search title, description, status, priority, category, subtask, note" />
+        <select name="sort" style="max-width:210px;">
+            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest first</option>
+            <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest first</option>
+            <option value="deadline" {% if sort == 'deadline' %}selected{% endif %}>Nearest deadline</option>
+            <option value="title" {% if sort == 'title' %}selected{% endif %}>Title A-Z</option>
+        </select>
         <button class="btn" type="submit">Search</button>
         <a class="btn secondary" href="{% url 'tasks:home' %}">Clear</a>
     </form>
-    <p class="muted" style="margin-top:10px;">Showing {{ tasks|length }} task{{ tasks|length|pluralize }}.</p>
+    <p class="muted" style="margin-top:10px;">Showing {{ page_obj.paginator.count }} task{{ page_obj.paginator.count|pluralize }}.</p>
 </section>
 
 <section class="card">
@@ -49,4 +63,18 @@
         <p>No tasks found.</p>
     {% endif %}
 </section>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<section class="card">
+    <div class="pagination" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        {% if page_obj.has_previous %}
+            <a class="btn secondary" href="?q={{ query }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span class="muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="btn secondary" href="?q={{ query }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
 {% endblock %}
