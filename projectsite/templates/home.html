@@ -4,7 +4,22 @@
 {% block content %}
 <div class="content">
     <div class="container-fluid">
-        <h4 class="page-title">Home</h4>
+        <h4 class="page-title">Hangarin Dashboard</h4>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="mb-2">Hangarin: Task &amp; To-Do Manager</h5>
+                        <p class="mb-1">
+                            The Hangarin is a simple web application built with Django that helps users organize
+                            their daily tasks, manage priorities, add notes, and break down large goals into smaller subtasks.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-3">
                 <div class="card card-stats card-warning">
@@ -17,8 +32,8 @@
                             </div>
                             <div class="col-7 d-flex align-items-center">
                                 <div class="numbers">
-                                    <p class="card-category">Students</p>
-                                    <h4 class="card-title">{{total_students}}</h4>
+                                    <p class="card-category">Total Tasks</p>
+                                    <h4 class="card-title">{{ total_tasks }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -36,8 +51,8 @@
                             </div>
                             <div class="col-7 d-flex align-items-center">
                                 <div class="numbers">
-                                    <p class="card-category">Joined This Year</p>
-                                    <h4 class="card-title">{{students_joined_this_year}}</h4>
+                                    <p class="card-category">Pending</p>
+                                    <h4 class="card-title">{{ pending_tasks }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -55,8 +70,8 @@
                             </div>
                             <div class="col-7 d-flex align-items-center">
                                 <div class="numbers">
-                                    <p class="card-category">Organizations</p>
-                                    <h4 class="card-title">{{total_organizations}}</h4>
+                                    <p class="card-category">In Progress</p>
+                                    <h4 class="card-title">{{ in_progress_tasks }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -74,8 +89,8 @@
                             </div>
                             <div class="col-7 d-flex align-items-center">
                                 <div class="numbers">
-                                    <p class="card-category">Programs</p>
-                                    <h4 class="card-title">{{total_programs}}</h4>
+                                    <p class="card-category">Completed</p>
+                                    <h4 class="card-title">{{ completed_tasks }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -84,14 +99,11 @@
             </div>
         </div>
 
-        <!-- Second Row: Recent Members + Top Organizations -->
         <div class="row mt-3">
-
-            <!-- Recent Members Table -->
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Recently Joined Members</div>
+                        <div class="card-title">Recent Tasks</div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -99,101 +111,59 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Student</th>
-                                        <th>Organization</th>
-                                        <th>Date Joined</th>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Priority</th>
+                                        <th>Category</th>
+                                        <th>Deadline</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for member in recent_members %}
+                                    {% for task in recent_tasks %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{ member.student.firstname }} {{ member.student.lastname }}</td>
-                                        <td>{{ member.organization.name }}</td>
-                                        <td>{{ member.date_joined|date:"M d, Y" }}</td>
+                                        <td>{{ task.title }}</td>
+                                        <td>{{ task.status }}</td>
+                                        <td>{{ task.priority.name }}</td>
+                                        <td>{{ task.category.name }}</td>
+                                        <td>{{ task.deadline|date:"M d, Y h:i A" }}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted">No members yet.</td>
+                                        <td colspan="6" class="text-center text-muted">No tasks yet.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <a href="{% url 'orgmember-list' %}" class="btn btn-primary btn-sm">
-                            View All Members
-                        </a>
-                    </div>
                 </div>
             </div>
 
-            <!-- Top Organizations -->
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Top Organizations by Members</div>
+                        <div class="card-title">Entity Counts</div>
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            {% for org in top_organizations %}
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <span>
-                                    <i class="la la-institution mr-1 text-primary"></i>
-                                    {{ org.name }}
-                                </span>
-                                <span class="badge badge-primary badge-pill">{{ org.member_count }}</span>
+                                <span>Subtasks</span>
+                                <span class="badge badge-primary badge-pill">{{ total_subtasks }}</span>
                             </li>
-                            {% empty %}
-                            <li class="list-group-item text-muted">No organizations found.</li>
-                            {% endfor %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span>Notes</span>
+                                <span class="badge badge-success badge-pill">{{ total_notes }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span>Priorities</span>
+                                <span class="badge badge-danger badge-pill">{{ total_priorities }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span>Categories</span>
+                                <span class="badge badge-info badge-pill">{{ total_categories }}</span>
+                            </li>
                         </ul>
-                    </div>
-                    <div class="card-footer">
-                        <a href="{% url 'organization-list' %}" class="btn btn-primary btn-sm">
-                            View All Organizations
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Third Row: Quick Links -->
-        <div class="row mt-2">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Quick Links</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <a href="{% url 'student-list' %}" class="btn btn-warning btn-block py-3">
-                                    <i class="la la-users la-2x d-block mb-1"></i>
-                                    Students
-                                </a>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <a href="{% url 'organization-list' %}" class="btn btn-danger btn-block py-3">
-                                    <i class="la la-institution la-2x d-block mb-1"></i>
-                                    Organizations
-                                </a>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <a href="{% url 'program-list' %}" class="btn btn-success btn-block py-3">
-                                    <i class="la la-book la-2x d-block mb-1"></i>
-                                    Programs
-                                </a>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <a href="{% url 'college-list' %}" class="btn btn-primary btn-block py-3">
-                                    <i class="la la-graduation-cap la-2x d-block mb-1"></i>
-                                    Colleges
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

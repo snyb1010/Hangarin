@@ -1,0 +1,30 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <h4 class="page-title">Tasks</h4>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">{% if object %}Update Task{% else %}Add New Task{% endif %}</div>
+                        <div class="card-category">Fill in the details below to save this task</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <form action="" method="post" novalidate>
+                                    {% csrf_token %} {% include 'includes/form.html' %}
+                                    <div class="d-flex flex-wrap" style="gap: 10px;">
+                                        <button type="submit" class="btn btn-primary btn-rounded">Save Task</button>
+                                        <a href="{% url 'task-list' %}" class="btn btn-light btn-rounded">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -23,6 +23,23 @@ else:
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def _load_env_file(env_path: Path) -> None:
+    if not env_path.exists():
+        return
+    for raw_line in env_path.read_text(encoding='utf-8').splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+        key, value = line.split('=', 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        os.environ.setdefault(key, value)
+
+
+# Load local secrets (e.g., GOOGLE_CLIENT_ID) for development.
+_load_env_file(BASE_DIR / '.env')
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -32,7 +49,7 @@ SECRET_KEY = 'django-insecure-7&nff^$^g50wk062u=(dqb*09f7-6k0kij=vbzigbo4(i%vxyj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['riveraestoya.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = ['riveraestoya.pythonanywhere.com', 'riverahangarin.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 
 
@@ -56,8 +73,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
 ]
-
-SITE_ID = 1
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

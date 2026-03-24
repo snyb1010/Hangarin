@@ -1,33 +1,50 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Organization, OrgMember, Student, College, Program
+from .models import Task, SubTask, Note, Category, Priority
 
 
-class OrganizationForm(ModelForm):
+class StyledModelForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            widget = field.widget
+            css_class = "form-control"
+            if isinstance(widget, forms.CheckboxInput):
+                css_class = "form-check-input"
+            elif isinstance(widget, forms.SelectMultiple):
+                css_class = "form-control"
+            widget.attrs["class"] = f"{widget.attrs.get('class', '')} {css_class}".strip()
+            if isinstance(widget, forms.Textarea):
+                widget.attrs.setdefault("rows", 4)
+            if not isinstance(widget, forms.CheckboxInput):
+                widget.attrs.setdefault("placeholder", field.label)
+
+
+class TaskForm(StyledModelForm):
     class Meta:
-        model = Organization
+        model = Task
         fields = "__all__"
 
 
-class OrgMemberForm(ModelForm):
+class SubTaskForm(StyledModelForm):
     class Meta:
-        model = OrgMember
+        model = SubTask
         fields = "__all__"
 
 
-class StudentForm(ModelForm):
+class NoteForm(StyledModelForm):
     class Meta:
-        model = Student
+        model = Note
         fields = "__all__"
 
 
-class CollegeForm(ModelForm):
+class CategoryForm(StyledModelForm):
     class Meta:
-        model = College
+        model = Category
         fields = "__all__"
 
 
-class ProgramForm(ModelForm):
+class PriorityForm(StyledModelForm):
     class Meta:
-        model = Program
+        model = Priority
         fields = "__all__"

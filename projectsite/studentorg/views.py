@@ -1,89 +1,81 @@
-from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from studentorg.models import Organization, OrgMember, Student, College, Program
-from studentorg.forms import OrganizationForm, OrgMemberForm, StudentForm, CollegeForm, ProgramForm
+from studentorg.models import (
+    Task,
+    SubTask,
+    Note,
+    Priority,
+    Category,
+)
+from studentorg.forms import TaskForm, SubTaskForm, NoteForm, CategoryForm, PriorityForm
 from django.urls import reverse_lazy
-from django.db.models import Q, Count
-from django.utils import timezone
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class HomePageView(LoginRequiredMixin, ListView):
-    model = Organization
-    context_object_name = 'home'
+    model = Task
+    context_object_name = 'tasks'
     template_name = "home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["total_students"] = Student.objects.count()
-
-        today = timezone.now().date()
-        count = (
-            OrgMember.objects.filter(
-                date_joined__year=today.year
-            )
-            .values("student")
-            .distinct()
-            .count()
-        )
-
-        context["students_joined_this_year"] = count
-        context["total_organizations"] = Organization.objects.count()
-        context["total_programs"] = Program.objects.count()
-        context["recent_members"] = OrgMember.objects.select_related(
-            "student", "organization"
-        ).order_by("-date_joined")[:8]
-        context["top_organizations"] = (
-            Organization.objects.annotate(member_count=Count("orgmember"))
-            .order_by("-member_count")[:5]
-        )
+        context["total_tasks"] = Task.objects.count()
+        context["pending_tasks"] = Task.objects.filter(status="Pending").count()
+        context["in_progress_tasks"] = Task.objects.filter(status="In Progress").count()
+        context["completed_tasks"] = Task.objects.filter(status="Completed").count()
+        context["total_subtasks"] = SubTask.objects.count()
+        context["total_notes"] = Note.objects.count()
+        context["total_priorities"] = Priority.objects.count()
+        context["total_categories"] = Category.objects.count()
+        context["recent_tasks"] = Task.objects.select_related("priority", "category").order_by("-created_at")[:8]
         return context
 
 
-class OrganizationList(ListView):
-    model = Organization
-    context_object_name = 'organization'
-    template_name = 'org_list.html'
+class TaskListView(ListView):
+    model = Task
+    context_object_name = 'tasks'
+    template_name = 'task_list.html'
     paginate_by = 5
-    ordering = ["college__college_name", "name"]
+    ordering = ["-created_at"]
 
     def get_queryset(self):
         qs = super().get_queryset()
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(
-                Q(name__icontains=query) |
-                Q(description__icontains=query)
+                Q(title__icontains=query) |
+                Q(description__icontains=query) |
+                Q(category__name__icontains=query) |
+                Q(priority__name__icontains=query)
             )
         return qs
 
 
-class OrganizationCreateView(CreateView):
-    model = Organization
-    form_class = OrganizationForm
-    template_name = 'org_form.html'
-    success_url = reverse_lazy('organization-list')
+class TaskCreateView(CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'task_form.html'
+    success_url = reverse_lazy('task-list')
 
 
-class OrganizationUpdateView(UpdateView):
-    model = Organization
-    form_class = OrganizationForm
-    template_name = 'org_form.html'
-    success_url = reverse_lazy('organization-list')
+class TaskUpdateView(UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'task_form.html'
+    success_url = reverse_lazy('task-list')
 
 
-class OrganizationDeleteView(DeleteView):
-    model = Organization
-    template_name = 'org_del.html'
-    success_url = reverse_lazy('organization-list')
+class TaskDeleteView(DeleteView):
+    model = Task
+    template_name = 'task_del.html'
+    success_url = reverse_lazy('task-list')
 
 
-# OrgMember Views
-class OrgMemberList(ListView):
-    model = OrgMember
-    context_object_name = 'orgmember'
-    template_name = 'orgmember_list.html'
+class SubTaskListView(ListView):
+    model = SubTask
+    context_object_name = 'subtasks'
+    template_name = 'subtask_list.html'
     paginate_by = 5
 
     def get_queryset(self):
@@ -91,42 +83,41 @@ class OrgMemberList(ListView):
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(
-                Q(student__firstname__icontains=query) |
-                Q(student__lastname__icontains=query) |
-                Q(organization__name__icontains=query)
+                Q(title__icontains=query) |
+                Q(parent_task__title__icontains=query) |
+                Q(status__icontains=query)
             )
-        allowed = ["student__lastname", "date_joined"]
+        allowed = ["title", "status"]
         sort_by = self.request.GET.get("sort_by")
         if sort_by in allowed:
             return qs.order_by(sort_by)
-        return qs
+        return qs.order_by("-created_at")
 
 
-class OrgMemberCreateView(CreateView):
-    model = OrgMember
-    form_class = OrgMemberForm
-    template_name = 'orgmember_form.html'
-    success_url = reverse_lazy('orgmember-list')
+class SubTaskCreateView(CreateView):
+    model = SubTask
+    form_class = SubTaskForm
+    template_name = 'subtask_form.html'
+    success_url = reverse_lazy('subtask-list')
 
 
-class OrgMemberUpdateView(UpdateView):
-    model = OrgMember
-    form_class = OrgMemberForm
-    template_name = 'orgmember_form.html'
-    success_url = reverse_lazy('orgmember-list')
+class SubTaskUpdateView(UpdateView):
+    model = SubTask
+    form_class = SubTaskForm
+    template_name = 'subtask_form.html'
+    success_url = reverse_lazy('subtask-list')
 
 
-class OrgMemberDeleteView(DeleteView):
-    model = OrgMember
-    template_name = 'orgmember_del.html'
-    success_url = reverse_lazy('orgmember-list')
+class SubTaskDeleteView(DeleteView):
+    model = SubTask
+    template_name = 'subtask_del.html'
+    success_url = reverse_lazy('subtask-list')
 
 
-# Student Views
-class StudentList(ListView):
-    model = Student
-    context_object_name = 'student'
-    template_name = 'student_list.html'
+class NoteListView(ListView):
+    model = Note
+    context_object_name = 'notes'
+    template_name = 'note_list.html'
     paginate_by = 5
 
     def get_queryset(self):
@@ -134,38 +125,36 @@ class StudentList(ListView):
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(
-                Q(firstname__icontains=query) |
-                Q(lastname__icontains=query) |
-                Q(middlename__icontains=query)
+                Q(content__icontains=query) |
+                Q(task__title__icontains=query)
             )
-        return qs
+        return qs.order_by("-created_at")
 
 
-class StudentCreateView(CreateView):
-    model = Student
-    form_class = StudentForm
-    template_name = 'student_form.html'
-    success_url = reverse_lazy('student-list')
+class NoteCreateView(CreateView):
+    model = Note
+    form_class = NoteForm
+    template_name = 'note_form.html'
+    success_url = reverse_lazy('note-list')
 
 
-class StudentUpdateView(UpdateView):
-    model = Student
-    form_class = StudentForm
-    template_name = 'student_form.html'
-    success_url = reverse_lazy('student-list')
+class NoteUpdateView(UpdateView):
+    model = Note
+    form_class = NoteForm
+    template_name = 'note_form.html'
+    success_url = reverse_lazy('note-list')
 
 
-class StudentDeleteView(DeleteView):
-    model = Student
-    template_name = 'student_del.html'
-    success_url = reverse_lazy('student-list')
+class NoteDeleteView(DeleteView):
+    model = Note
+    template_name = 'note_del.html'
+    success_url = reverse_lazy('note-list')
 
 
-# College Views
-class CollegeList(ListView):
-    model = College
-    context_object_name = 'college'
-    template_name = 'college_list.html'
+class CategoryListView(ListView):
+    model = Category
+    context_object_name = 'categories'
+    template_name = 'category_list.html'
     paginate_by = 5
 
     def get_queryset(self):
@@ -173,36 +162,35 @@ class CollegeList(ListView):
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(
-                Q(college_name__icontains=query)
+                Q(name__icontains=query)
             )
-        return qs
+        return qs.order_by("name")
 
 
-class CollegeCreateView(CreateView):
-    model = College
-    form_class = CollegeForm
-    template_name = 'college_form.html'
-    success_url = reverse_lazy('college-list')
+class CategoryCreateView(CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'category_form.html'
+    success_url = reverse_lazy('category-list')
 
 
-class CollegeUpdateView(UpdateView):
-    model = College
-    form_class = CollegeForm
-    template_name = 'college_form.html'
-    success_url = reverse_lazy('college-list')
+class CategoryUpdateView(UpdateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'category_form.html'
+    success_url = reverse_lazy('category-list')
 
 
-class CollegeDeleteView(DeleteView):
-    model = College
-    template_name = 'college_del.html'
-    success_url = reverse_lazy('college-list')
+class CategoryDeleteView(DeleteView):
+    model = Category
+    template_name = 'category_del.html'
+    success_url = reverse_lazy('category-list')
 
 
-# Program Views
-class ProgramList(ListView):
-    model = Program
-    context_object_name = 'program'
-    template_name = 'program_list.html'
+class PriorityListView(ListView):
+    model = Priority
+    context_object_name = 'priorities'
+    template_name = 'priority_list.html'
     paginate_by = 5
 
     def get_queryset(self):
@@ -210,34 +198,33 @@ class ProgramList(ListView):
         query = self.request.GET.get('q')
         if query:
             qs = qs.filter(
-                Q(prog_name__icontains=query) |
-                Q(college__college_name__icontains=query)
+                Q(name__icontains=query)
             )
         return qs
 
     def get_ordering(self):
-        allowed = ["prog_name", "college__college_name"]
+        allowed = ["name", "created_at"]
         sort_by = self.request.GET.get("sort_by")
         if sort_by in allowed:
             return sort_by
-        return "prog_name"
+        return "name"
 
 
-class ProgramCreateView(CreateView):
-    model = Program
-    form_class = ProgramForm
-    template_name = 'program_form.html'
-    success_url = reverse_lazy('program-list')
+class PriorityCreateView(CreateView):
+    model = Priority
+    form_class = PriorityForm
+    template_name = 'priority_form.html'
+    success_url = reverse_lazy('priority-list')
 
 
-class ProgramUpdateView(UpdateView):
-    model = Program
-    form_class = ProgramForm
-    template_name = 'program_form.html'
-    success_url = reverse_lazy('program-list')
+class PriorityUpdateView(UpdateView):
+    model = Priority
+    form_class = PriorityForm
+    template_name = 'priority_form.html'
+    success_url = reverse_lazy('priority-list')
 
 
-class ProgramDeleteView(DeleteView):
-    model = Program
-    template_name = 'program_del.html'
-    success_url = reverse_lazy('program-list')
+class PriorityDeleteView(DeleteView):
+    model = Priority
+    template_name = 'priority_del.html'
+    success_url = reverse_lazy('priority-list')

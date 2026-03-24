@@ -1,0 +1,76 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <h4 class="page-title">Notes</h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">List of Notes</div>
+                        <div class="card-category">Capture important details and context per task</div>
+                    </div>
+                    <div class="card-body border-bottom pb-3">
+                        <div class="row align-items-center">
+                        <div class="col-md-7 mb-2 mb-md-0">
+                            <form class="mb-0" action="{% url 'note-list' %}">
+                                <div class="input-group">
+                                    <input type="text" placeholder="Search note content or task..." class="form-control" name="q" value="{{ request.GET.q }}" />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit"><i class="la la-search"></i></button>
+                                        <span class="input-group-text">
+                                            <a href="{% url 'note-list' %}" class="text-muted" title="Clear search"><i class="la la-close"></i></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-5 text-md-right">
+                            <a href="{% url 'note-add' %}" class="btn btn-success btn-rounded"><i class="la la-plus"></i> Add Note</a>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped table-hover mt-3">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Task Ref</th>
+                                    <th scope="col">Content</th>
+                                    <th scope="col">Created By</th>
+                                    <th scope="col">Details</th>
+                                    <th scope="col">Created At</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for object in object_list %}
+                                <tr>
+                                    <td>{{ object.task.title }}</td>
+                                    <td>{{ object.content|truncatechars:60 }}</td>
+                                    <td>-</td>
+                                    <td>{{ object.task.priority.name }}</td>
+                                    <td>{{ object.created_at|date:"M d, Y h:i A" }}</td>
+                                    <td>
+                                        <a href="{% url 'note-update' object.id %}" class="btn btn-sm btn-primary">Edit</a>
+                                        <a href="{% url 'note-delete' object.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" style="text-align: center">
+                                        <div class="py-4">
+                                            <i class="la la-inbox" style="font-size: 28px; color: #94a3b8;"></i>
+                                            <p class="text-sm font-weight-bold mt-2 mb-0">No notes found</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% include 'includes/pagination.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

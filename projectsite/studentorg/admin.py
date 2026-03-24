@@ -1,37 +1,46 @@
 from django.contrib import admin
-from .models import College, Program, Organization, Student, OrgMember
+from .models import (
+    Priority,
+    Category,
+    Task,
+    Note,
+    SubTask,
+)
 
-# ----------------------------
-# Task A – CollegeAdmin
-# ----------------------------
-@admin.register(College)
-class CollegeAdmin(admin.ModelAdmin):
-    list_display = ("college_name", "created_at", "updated_at")
-    search_fields = ("college_name",)
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ("title", "status", "deadline", "priority", "category")
+    list_filter = ("status", "priority", "category")
+    search_fields = ("title", "description")
+
+
+@admin.register(SubTask)
+class SubTaskAdmin(admin.ModelAdmin):
+    list_display = ("title", "status", "parent_task_name")
+    list_filter = ("status",)
+    search_fields = ("title",)
+
+    def parent_task_name(self, obj):
+        return obj.parent_task.title
+
+    parent_task_name.short_description = "Parent Task"
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+
+
+@admin.register(Priority)
+class PriorityAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+
+
+@admin.register(Note)
+class NoteAdmin(admin.ModelAdmin):
+    list_display = ("task", "content", "created_at")
     list_filter = ("created_at",)
-
-# ----------------------------
-# Task B – ProgramAdmin
-# ----------------------------
-@admin.register(Program)
-class ProgramAdmin(admin.ModelAdmin):
-    list_display = ("prog_name", "college")
-    search_fields = ("prog_name", "college__college_name")
-    list_filter = ("college",)
-
-# ----------------------------
-# Task C – OrganizationAdmin
-# ----------------------------
-@admin.register(Organization)
-class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ("name", "college", "description")
-    search_fields = ("name", "description")
-    list_filter = ("college",)
-
-# ----------------------------
-# StudentAdmin
-# ----------------------------
-@admin.register(Student)
-class StudentAdmin(admin.ModelAdmin):
-    list_display = ("student_id", "lastname", "firstname", "middlename", "program")
-    search_fields = ("lastname", "firstname")
+    search_fields = ("content",)

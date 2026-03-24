@@ -1,81 +1,113 @@
-# PSUSphere
+# Hangarin
 
-A Django web application for managing student organizations at Palawan State University.
+## Hangarin: Task & To-Do Manager
 
-## Description
+The Hangarin is a simple web application built with Django,
+that helps users organize their daily tasks, manage priorities,
+add notes, and break down large goals into smaller subtasks.
 
-PSUSphere is a student organization management system built with Django. It provides a dashboard to track colleges, programs, students, organizations, and organization memberships. The app includes search, sorting, and social login features.
+Figure 1 Entity Relationship Diagram
 
-## Features
+Given the ERD above create the application with following requirements:
+- Prepare virtual environment for this project.
+- Use version control in managing your code.
+- Deploy the project in PythonAnywhere.
 
-- **Dashboard** — Summary cards showing total students, students who joined this year, total organizations, and total programs
-- **Colleges** — View and search colleges
-- **Programs** — View, search, and sort programs by name or college
-- **Students** — View and search students by name
-- **Organizations** — View and search organizations, sorted by college and name
-- **Org Members** — View, search, and sort members by student name or date joined
-- **Authentication** — Login/logout with username or email; Social login via Google and GitHub (django-allauth)
-- **Django Admin** — Full backend management panel
-- **Pagination** — All list pages are paginated
+## 1. Model
 
-## Tech Stack
-
-- Python 3.12
-- Django 6.0.2
-- SQLite
-- django-allauth 65.x (Google & GitHub OAuth)
-- django-widget-tweaks
-- Faker (for seed data)
-
-## How to Run
-
-```bash
-# Activate virtual environment (Windows)
-psusenv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run migrations
-cd projectsite
-python manage.py migrate
-
-# (Optional) Create a superuser for admin access
-python manage.py createsuperuser
-
-# Start the development server
-python manage.py runserver
-```
-
-Then open your browser and go to `http://127.0.0.1:8000/`
-
-## Social Login Setup (Google & GitHub)
-
-To enable Google and GitHub login, add your OAuth credentials to `projectsite/settings.py`:
+- Inherit BaseModel with created_at and updated_at fields.
+- Add __str__ method for each model.
+- Use field choices (enumeration) in status fields.
+  This will generate dropdown in Admin side.
 
 ```python
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': '<your-google-client-id>',
-            'secret': '<your-google-client-secret>',
-            'key': ''
-        }
-    },
-    'github': {
-        'APP': {
-            'client_id': '<your-github-client-id>',
-            'secret': '<your-github-client-secret>',
-            'key': ''
-        }
-    }
-}
+status = models.CharField(
+    max_length=50,
+    choices=[
+        ("Pending", "Pending"),
+        ("In Progress", "In Progress"),
+        ("Completed", "Completed"),
+    ],
+    default="Pending"
+)
 ```
 
-- **Google**: Create credentials at [console.cloud.google.com](https://console.cloud.google.com/) — set redirect URI to `http://127.0.0.1:8000/accounts/google/login/callback/`
-- **GitHub**: Create an OAuth App at [github.com/settings/developers](https://github.com/settings/developers) — set callback URL to `http://127.0.0.1:8000/accounts/github/login/callback/`
+## 2. Populating Data
 
-## Authors
+- Manually add record to Priority (high, medium, low, critical, and optional)
+  and Category (Work, School, Personal, Finance, Projects).
+- Use faker package in generating fake data for Task, Notes, and SubTask models.
+  - For task title use sentence()
+  - For task description use paragraph()
+  - For status use random_element()
 
-- Rivera, Vince Alshie
-- Estoya, Ethan Laureen
+```python
+fake.sentence(nb_words=5)
+# -> Generates a random sentence consisting of about nb_words words.
+#    It starts with a capital letter and ends with a period (.).
+
+fake.paragraph(nb_sentences=3)
+# -> Generates a random paragraph with about nb_sentences sentences.
+
+fake.random_element(elements=["Pending", "In Progress", "Completed"])
+# -> Returns a random value from the given sequence (list, tuple, set, or dict).
+
+from django.utils import timezone
+deadline = timezone.make_aware(fake.date_time_this_month())
+
+# fake.date_time_this_month() -> Generates a random datetime object within the current month.
+# timezone.make_aware() -> Takes a naive datetime and converts it into
+#                           a timezone-aware datetime (project configured timezone).
+```
+
+## 3. Admin
+
+TaskAdmin:
+- Display title, status, deadline, priority, category.
+- Add filters for status, priority, category.
+- Enable search on title and description.
+
+SubTaskAdmin:
+- Display title, status, and a custom field parent_task_name.
+- Filter by status.
+- Enable search on title.
+
+CategoryAdmin and PriorityAdmin:
+- Display just the name field.
+- Make them searchable.
+
+NoteAdmin:
+- Display task, content, and created_at.
+- Filter by created_at.
+- Enable search on content.
+
+## 4. Refactor
+
+- To replace the "Categorys" and "Prioritys" which are not grammatically correct,
+  add verbose_name_plural attribute.
+
+```python
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
+```
+
+## Run Locally
+
+```bash
+psusenv\Scripts\activate
+pip install -r requirements.txt
+cd projectsite
+python manage.py makemigrations
+python manage.py migrate
+python manage.py seed_hangarin_data --tasks 25
+# Use --keep-existing if you do NOT want to clear old data first
+# python manage.py seed_hangarin_data --tasks 25 --keep-existing
+python manage.py runserver
+```
