@@ -1,0 +1,46 @@
+{% extends 'tasks/base.html' %}
+{% block title %}Task Details{% endblock %}
+{% block content %}
+<section class="card">
+    <h2 style="margin-top:0;">{{ task.title }}</h2>
+    <p>{{ task.description }}</p>
+    <div class="grid">
+        <div><strong>Status:</strong> {{ task.status }}</div>
+        <div><strong>Priority:</strong> {{ task.priority.name }}</div>
+        <div><strong>Category:</strong> {{ task.category.name }}</div>
+        <div><strong>Deadline:</strong> {{ task.deadline|date:"M d, Y H:i" }}</div>
+    </div>
+    <p class="muted">Created: {{ task.created_at|date:"M d, Y H:i" }} | Updated: {{ task.updated_at|date:"M d, Y H:i" }}</p>
+    <div class="actions">
+        <a class="btn secondary" href="{% url 'tasks:home' %}">Back</a>
+        <a class="btn" href="{% url 'tasks:task_update' task.pk %}">Edit</a>
+        <a class="btn danger" href="{% url 'tasks:task_delete' task.pk %}">Delete</a>
+    </div>
+</section>
+
+<section class="card">
+    <h3>Subtasks</h3>
+    {% if task.subtask_set.all %}
+        <ul>
+            {% for subtask in task.subtask_set.all %}
+                <li>{{ subtask.title }} - {{ subtask.status }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">No subtasks yet.</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h3>Notes</h3>
+    {% if task.note_set.all %}
+        <ul>
+            {% for note in task.note_set.all %}
+                <li>{{ note.content }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">No notes yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

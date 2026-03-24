@@ -1,0 +1,52 @@
+{% extends 'tasks/base.html' %}
+{% block title %}Hangarin | Home{% endblock %}
+{% block content %}
+<section class="card">
+    <form method="get" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search title, description, status, priority, category, subtask, note" />
+        <button class="btn" type="submit">Search</button>
+        <a class="btn secondary" href="{% url 'tasks:home' %}">Clear</a>
+    </form>
+    <p class="muted" style="margin-top:10px;">Showing {{ tasks|length }} task{{ tasks|length|pluralize }}.</p>
+</section>
+
+<section class="card">
+    {% if tasks %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Category</th>
+                <th>Deadline</th>
+                <th>Data</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>
+                    <strong>{{ task.title }}</strong><br>
+                    <span class="muted">{{ task.description|truncatechars:70 }}</span>
+                </td>
+                <td><span class="status">{{ task.status }}</span></td>
+                <td>{{ task.priority.name }}</td>
+                <td>{{ task.category.name }}</td>
+                <td>{{ task.deadline|date:"M d, Y H:i" }}</td>
+                <td>{{ task.subtask_count }} subtask{{ task.subtask_count|pluralize }}, {{ task.note_count }} note{{ task.note_count|pluralize }}</td>
+                <td>
+                    <a href="{% url 'tasks:task_detail' task.pk %}">View</a> |
+                    <a href="{% url 'tasks:task_update' task.pk %}">Edit</a> |
+                    <a href="{% url 'tasks:task_delete' task.pk %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No tasks found.</p>
+    {% endif %}
+</section>
+{% endblock %}
