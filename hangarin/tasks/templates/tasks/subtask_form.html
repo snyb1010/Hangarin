@@ -1,5 +1,6 @@
 {% extends 'tasks/base.html' %}
 {% block title %}{% if is_create %}Create Subtask{% else %}Edit Subtask{% endif %}{% endblock %}
+{% block page_title %}{% if is_create %}Create Subtask{% else %}Edit Subtask{% endif %}{% endblock %}
 {% block content %}
 <section class="card">
     <h2 style="margin-top:0;">{% if is_create %}Create Subtask{% else %}Edit Subtask{% endif %}</h2>

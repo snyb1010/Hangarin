@@ -1,5 +1,6 @@
 {% extends 'tasks/base.html' %}
 {% block title %}{% if is_create %}Create Note{% else %}Edit Note{% endif %}{% endblock %}
+{% block page_title %}{% if is_create %}Create Note{% else %}Edit Note{% endif %}{% endblock %}
 {% block content %}
 <section class="card">
     <h2 style="margin-top:0;">{% if is_create %}Create Note{% else %}Edit Note{% endif %}</h2>

@@ -47,8 +47,10 @@
             {% for subtask in task.subtask_set.all %}
                 <li>
                     {{ subtask.title }} - {{ subtask.status }}
-                    (<a href="{% url 'tasks:subtask_update' subtask.pk %}">Edit</a> |
-                    <a href="{% url 'tasks:subtask_delete' subtask.pk %}">Delete</a>)
+                    <span class="action-group" style="margin-left:6px;">
+                        <a class="btn sm ghost" href="{% url 'tasks:subtask_update' subtask.pk %}">Edit</a>
+                        <a class="btn sm danger" href="{% url 'tasks:subtask_delete' subtask.pk %}">Delete</a>
+                    </span>
                 </li>
             {% endfor %}
         </ul>
@@ -65,8 +67,10 @@
             {% for note in task.note_set.all %}
                 <li>
                     {{ note.content }}
-                    (<a href="{% url 'tasks:note_update' note.pk %}">Edit</a> |
-                    <a href="{% url 'tasks:note_delete' note.pk %}">Delete</a>)
+                    <span class="action-group" style="margin-left:6px;">
+                        <a class="btn sm ghost" href="{% url 'tasks:note_update' note.pk %}">Edit</a>
+                        <a class="btn sm danger" href="{% url 'tasks:note_delete' note.pk %}">Delete</a>
+                    </span>
                 </li>
             {% endfor %}
         </ul>

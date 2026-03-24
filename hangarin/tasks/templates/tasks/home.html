@@ -70,9 +70,11 @@
                 <td>{{ task.deadline|date:"M d, Y H:i" }}</td>
                 <td>{{ task.subtask_count }} subtask{{ task.subtask_count|pluralize }}, {{ task.note_count }} note{{ task.note_count|pluralize }}</td>
                 <td>
-                    <a href="{% url 'tasks:task_detail' task.pk %}">View</a> |
-                    <a href="{% url 'tasks:task_update' task.pk %}">Edit</a> |
-                    <a href="{% url 'tasks:task_delete' task.pk %}">Delete</a>
+                    <div class="action-group">
+                        <a class="btn sm info" href="{% url 'tasks:task_detail' task.pk %}">View</a>
+                        <a class="btn sm ghost" href="{% url 'tasks:task_update' task.pk %}">Edit</a>
+                        <a class="btn sm danger" href="{% url 'tasks:task_delete' task.pk %}">Delete</a>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

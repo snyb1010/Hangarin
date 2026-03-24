@@ -141,6 +141,34 @@
 
         .btn.secondary { background: #fff; color: var(--accent); }
         .btn.danger { background: var(--danger); border-color: var(--danger); }
+        .btn.ghost {
+            background: #fff;
+            color: var(--ink);
+            border-color: var(--line);
+        }
+        .btn.ghost:hover {
+            box-shadow: 0 8px 20px rgba(124, 45, 18, .14);
+        }
+        .btn.info {
+            background: #fff6ed;
+            color: #9a3412;
+            border-color: #fed7aa;
+        }
+        .btn.info:hover {
+            box-shadow: 0 8px 20px rgba(154, 52, 18, .15);
+        }
+        .btn.sm {
+            padding: 5px 9px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+        .action-group {
+            display: inline-flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
 
         .card {
             background: var(--paper);

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hangarin | Login</title>
+    <style>
+        :root {
+            --ink: #2f271f;
+            --muted: #7a6a5a;
+            --line: #dccdb8;
+            --accent: #b45309;
+            --accent-2: #7c2d12;
+            --paper: #fffdf8;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(900px 420px at 10% -20%, #fecaca 0%, transparent 65%),
+                radial-gradient(900px 420px at 100% 110%, #fed7aa 0%, transparent 62%),
+                #f4efe7;
+        }
+        .panel {
+            width: min(92vw, 440px);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--paper);
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(124, 45, 18, .14);
+            animation: enter .35s ease;
+        }
+        @keyframes enter {
+            from { opacity: 0; transform: translateY(12px) scale(.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        h1 { margin: 0; font-size: 34px; color: var(--accent-2); }
+        p { margin-top: 6px; color: var(--muted); }
+        .field { margin-top: 14px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; }
+        input {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 11px;
+            font: inherit;
+            background: #fff;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #e5a15d;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, .2);
+        }
+        .errorlist {
+            margin: 8px 0 0;
+            color: #b91c1c;
+            font-size: 13px;
+            padding-left: 18px;
+        }
+        .btn {
+            margin-top: 16px;
+            width: 100%;
+            border: 1px solid var(--accent);
+            background: var(--accent);
+            color: #fff;
+            border-radius: 10px;
+            padding: 11px;
+            font: inherit;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(180, 83, 9, .25);
+        }
+        .hint {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <section class="panel">
+        <h1>Hangarin</h1>
+        <p>Login to manage your task workspace.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <div class="field">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+
+            <div class="field">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+
+            <button class="btn" type="submit">Sign In</button>
+            <div class="hint">Use your Django superuser or existing account.</div>
+        </form>
+    </section>
+</body>
+</html>

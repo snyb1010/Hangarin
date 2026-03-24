@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -6,6 +7,7 @@ from .forms import NoteForm, SubTaskForm, TaskForm
 from .models import Note, SubTask, Task
 
 
+@login_required
 def home(request):
 	query = request.GET.get("q", "").strip()
 	sort = request.GET.get("sort", "newest")
@@ -52,6 +54,7 @@ def home(request):
 	return render(request, "tasks/home.html", context)
 
 
+@login_required
 def task_create(request):
 	form = TaskForm(request.POST or None)
 	if request.method == "POST" and form.is_valid():
@@ -60,6 +63,7 @@ def task_create(request):
 	return render(request, "tasks/task_form.html", {"form": form, "is_create": True})
 
 
+@login_required
 def task_detail(request, pk):
 	task = get_object_or_404(
 		Task.objects.select_related("priority", "category").prefetch_related("subtask_set", "note_set"),
@@ -68,6 +72,7 @@ def task_detail(request, pk):
 	return render(request, "tasks/task_detail.html", {"task": task})
 
 
+@login_required
 def task_update(request, pk):
 	task = get_object_or_404(Task, pk=pk)
 	form = TaskForm(request.POST or None, instance=task)
@@ -77,6 +82,7 @@ def task_update(request, pk):
 	return render(request, "tasks/task_form.html", {"form": form, "task": task, "is_create": False})
 
 
+@login_required
 def task_delete(request, pk):
 	task = get_object_or_404(Task, pk=pk)
 	if request.method == "POST":
@@ -85,6 +91,7 @@ def task_delete(request, pk):
 	return render(request, "tasks/task_confirm_delete.html", {"task": task})
 
 
+@login_required
 def subtask_create(request, task_pk):
 	task = get_object_or_404(Task, pk=task_pk)
 	form = SubTaskForm(request.POST or None)
@@ -96,6 +103,7 @@ def subtask_create(request, task_pk):
 	return render(request, "tasks/subtask_form.html", {"form": form, "task": task, "is_create": True})
 
 
+@login_required
 def subtask_update(request, pk):
 	subtask = get_object_or_404(SubTask.objects.select_related("task"), pk=pk)
 	form = SubTaskForm(request.POST or None, instance=subtask)
@@ -109,6 +117,7 @@ def subtask_update(request, pk):
 	)
 
 
+@login_required
 def subtask_delete(request, pk):
 	subtask = get_object_or_404(SubTask.objects.select_related("task"), pk=pk)
 	task_pk = subtask.task.pk
@@ -118,6 +127,7 @@ def subtask_delete(request, pk):
 	return render(request, "tasks/subtask_confirm_delete.html", {"subtask": subtask})
 
 
+@login_required
 def note_create(request, task_pk):
 	task = get_object_or_404(Task, pk=task_pk)
 	form = NoteForm(request.POST or None)
@@ -129,6 +139,7 @@ def note_create(request, task_pk):
 	return render(request, "tasks/note_form.html", {"form": form, "task": task, "is_create": True})
 
 
+@login_required
 def note_update(request, pk):
 	note = get_object_or_404(Note.objects.select_related("task"), pk=pk)
 	form = NoteForm(request.POST or None, instance=note)
@@ -142,6 +153,7 @@ def note_update(request, pk):
 	)
 
 
+@login_required
 def note_delete(request, pk):
 	note = get_object_or_404(Note.objects.select_related("task"), pk=pk)
 	task_pk = note.task.pk
