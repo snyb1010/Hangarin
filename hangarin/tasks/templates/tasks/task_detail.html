@@ -1,12 +1,33 @@
 {% extends 'tasks/base.html' %}
 {% block title %}Task Details{% endblock %}
+{% block page_title %}Task Details{% endblock %}
 {% block content %}
 <section class="card">
     <h2 style="margin-top:0;">{{ task.title }}</h2>
     <p>{{ task.description }}</p>
     <div class="grid">
-        <div><strong>Status:</strong> {{ task.status }}</div>
-        <div><strong>Priority:</strong> {{ task.priority.name }}</div>
+        <div>
+            <strong>Status:</strong>
+            <span class="status
+                {% if task.status == 'Pending' %} status--pending{% endif %}
+                {% if task.status == 'In Progress' %} status--inprogress{% endif %}
+                {% if task.status == 'Completed' %} status--completed{% endif %}
+            ">
+                {{ task.status }}
+            </span>
+        </div>
+        <div>
+            <strong>Priority:</strong>
+            <span class="priority-pill
+                {% if task.priority.name|lower == 'high' %} priority-high{% endif %}
+                {% if task.priority.name|lower == 'medium' %} priority-medium{% endif %}
+                {% if task.priority.name|lower == 'low' %} priority-low{% endif %}
+                {% if task.priority.name|lower == 'critical' %} priority-critical{% endif %}
+                {% if task.priority.name|lower == 'optional' %} priority-optional{% endif %}
+            ">
+                {{ task.priority.name }}
+            </span>
+        </div>
         <div><strong>Category:</strong> {{ task.category.name }}</div>
         <div><strong>Deadline:</strong> {{ task.deadline|date:"M d, Y H:i" }}</div>
     </div>

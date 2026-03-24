@@ -1,5 +1,6 @@
 {% extends 'tasks/base.html' %}
 {% block title %}Hangarin | Home{% endblock %}
+{% block page_title %}Task Dashboard{% endblock %}
 {% block content %}
 <section class="card">
     <div class="stats" style="margin-bottom:14px;">
@@ -45,8 +46,26 @@
                     <strong>{{ task.title }}</strong><br>
                     <span class="muted">{{ task.description|truncatechars:70 }}</span>
                 </td>
-                <td><span class="status">{{ task.status }}</span></td>
-                <td>{{ task.priority.name }}</td>
+                <td>
+                    <span class="status
+                        {% if task.status == 'Pending' %} status--pending{% endif %}
+                        {% if task.status == 'In Progress' %} status--inprogress{% endif %}
+                        {% if task.status == 'Completed' %} status--completed{% endif %}
+                    ">
+                        {{ task.status }}
+                    </span>
+                </td>
+                <td>
+                    <span class="priority-pill
+                        {% if task.priority.name|lower == 'high' %} priority-high{% endif %}
+                        {% if task.priority.name|lower == 'medium' %} priority-medium{% endif %}
+                        {% if task.priority.name|lower == 'low' %} priority-low{% endif %}
+                        {% if task.priority.name|lower == 'critical' %} priority-critical{% endif %}
+                        {% if task.priority.name|lower == 'optional' %} priority-optional{% endif %}
+                    ">
+                        {{ task.priority.name }}
+                    </span>
+                </td>
                 <td>{{ task.category.name }}</td>
                 <td>{{ task.deadline|date:"M d, Y H:i" }}</td>
                 <td>{{ task.subtask_count }} subtask{{ task.subtask_count|pluralize }}, {{ task.note_count }} note{{ task.note_count|pluralize }}</td>

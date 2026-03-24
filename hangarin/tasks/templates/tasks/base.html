@@ -6,97 +6,280 @@
     <title>{% block title %}Hangarin{% endblock %}</title>
     <style>
         :root {
-            --bg: #f8f7f4;
-            --paper: #ffffff;
-            --ink: #1f2937;
-            --muted: #6b7280;
-            --line: #d1d5db;
-            --accent: #0f766e;
-            --accent-2: #134e4a;
+            --bg: #f4efe7;
+            --paper: #fffdf8;
+            --ink: #28231d;
+            --muted: #75675a;
+            --line: #d8ccb9;
+            --accent: #b45309;
+            --accent-2: #7c2d12;
             --danger: #b91c1c;
         }
+
         * { box-sizing: border-box; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         body {
             margin: 0;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
             color: var(--ink);
-            background: radial-gradient(circle at top right, #dbeafe 0%, var(--bg) 42%);
+            background:
+                radial-gradient(1200px 500px at 90% -10%, #ffd9a8 0%, transparent 65%),
+                radial-gradient(900px 500px at -20% 100%, #fecaca 0%, transparent 60%),
+                var(--bg);
         }
-        .wrap { max-width: 1040px; margin: 0 auto; padding: 24px; }
+
+        .app {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid var(--line);
+            background: linear-gradient(165deg, #fff7ed 0%, #fffdf8 45%, #fef2f2 100%);
+            padding: 22px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar h1 {
+            margin: 0;
+            font-size: 30px;
+            letter-spacing: .4px;
+        }
+
+        .brand-note {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: inherit;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: #fff;
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+
+        .nav a:hover {
+            transform: translateX(4px);
+            border-color: #e5a15d;
+            box-shadow: 0 8px 20px rgba(124, 45, 18, .08);
+        }
+
+        .nav a.active {
+            background: #fff2e2;
+            border-color: #e5a15d;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--line);
+            padding-top: 14px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .content-wrap {
+            padding: 24px;
+            animation: fadeUp .35s ease;
+        }
+
         .topbar {
             display: flex;
             justify-content: space-between;
-            gap: 12px;
+            gap: 14px;
             align-items: center;
             margin-bottom: 20px;
-            padding-bottom: 12px;
+            padding-bottom: 14px;
             border-bottom: 1px solid var(--line);
         }
-        .brand { margin: 0; font-size: 28px; letter-spacing: .3px; }
+
+        .brand {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: .2px;
+        }
+
         .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
         .btn {
             text-decoration: none;
             display: inline-block;
             border: 1px solid var(--accent);
             background: var(--accent);
             color: #fff;
-            padding: 8px 14px;
-            border-radius: 8px;
+            padding: 9px 14px;
+            border-radius: 10px;
             font-size: 14px;
             cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
         }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(180, 83, 9, .22);
+        }
+
         .btn.secondary { background: #fff; color: var(--accent); }
         .btn.danger { background: var(--danger); border-color: var(--danger); }
+
         .card {
             background: var(--paper);
             border: 1px solid var(--line);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 16px;
             margin-bottom: 14px;
+            box-shadow: 0 8px 24px rgba(124, 45, 18, .05);
+            transition: transform .2s ease, box-shadow .2s ease;
         }
+
+        .card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(124, 45, 18, .09);
+        }
+
         .stats {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
         }
+
         .stat {
             border: 1px solid var(--line);
             border-radius: 10px;
-            background: #fdfdfd;
+            background: linear-gradient(145deg, #fff, #fff9f1);
             padding: 10px;
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
+
         .stat strong {
             font-size: 22px;
             color: var(--accent-2);
             line-height: 1;
         }
+
         .muted { color: var(--muted); }
+
         input, select, textarea {
             width: 100%;
             border: 1px solid var(--line);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 10px;
             font: inherit;
             background: #fff;
+            transition: border-color .2s ease, box-shadow .2s ease;
         }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #e5a15d;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, .18);
+        }
+
         textarea { min-height: 110px; }
         .field { margin-bottom: 14px; }
         .field label { display: block; margin-bottom: 6px; font-weight: 600; }
         .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
         .status {
             font-size: 12px;
             display: inline-block;
             border-radius: 999px;
             border: 1px solid var(--line);
             padding: 3px 10px;
-            background: #f9fafb;
+            background: #fff7ed;
         }
+
         table { width: 100%; border-collapse: collapse; }
-        th, td { text-align: left; border-bottom: 1px solid var(--line); padding: 10px 8px; vertical-align: top; }
+        thead {
+            background: linear-gradient(90deg, #fff4e5, #ffe5d0);
+        }
+        th {
+            text-align: left;
+            border-bottom: 1px solid var(--line);
+            padding: 10px 8px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: var(--muted);
+        }
+        td {
+            text-align: left;
+            border-bottom: 1px solid var(--line);
+            padding: 10px 8px;
+            vertical-align: top;
+        }
+        tbody tr {
+            transition: background-color .15s ease, transform .15s ease;
+        }
+        tbody tr:hover {
+            background-color: #fff7ec;
+            transform: translateY(-1px);
+        }
+
+        .badge {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 3px 9px;
+            font-size: 11px;
+            border: 1px solid var(--line);
+            background: #fff;
+        }
+        .status--pending { background: #fef9c3; border-color: #facc15; }
+        .status--inprogress { background: #e0f2fe; border-color: #38bdf8; }
+        .status--completed { background: #dcfce7; border-color: #22c55e; }
+
+        .priority-pill {
+            font-size: 11px;
+            border-radius: 999px;
+            padding: 3px 9px;
+            border: 1px solid var(--line);
+        }
+        .priority-high { background: #fee2e2; border-color: #f97373; }
+        .priority-medium { background: #fef3c7; border-color: #fbbf24; }
+        .priority-low { background: #e0f2fe; border-color: #38bdf8; }
+        .priority-critical { background: #fee2e2; border-color: #b91c1c; }
+        .priority-optional { background: #e5e7eb; border-color: #9ca3af; }
+
+        .mobile-menu {
+            display: none;
+            margin-bottom: 12px;
+        }
+
         @media (max-width: 760px) {
+            .app { grid-template-columns: 1fr; }
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                width: 82%;
+                max-width: 300px;
+                z-index: 1000;
+                transition: left .25s ease;
+            }
+            .sidebar.open { left: 0; }
+            .mobile-menu { display: inline-block; }
             .grid { grid-template-columns: 1fr; }
             .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .topbar { align-items: flex-start; flex-direction: column; }
@@ -104,15 +287,53 @@
     </style>
 </head>
 <body>
-    <main class="wrap">
-        <header class="topbar">
-            <h1 class="brand"><a href="{% url 'tasks:home' %}" style="text-decoration:none;color:inherit;">Hangarin</a></h1>
-            <div class="actions">
-                <a class="btn secondary" href="/admin/">Admin</a>
-                <a class="btn" href="{% url 'tasks:task_create' %}">+ New Task</a>
+    <div class="app">
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <h1>Hangarin</h1>
+                <div class="brand-note">Task and Progress Hub</div>
             </div>
-        </header>
-        {% block content %}{% endblock %}
-    </main>
+
+            <nav class="nav">
+                <a class="{% if request.path == '/' %}active{% endif %}" href="{% url 'tasks:home' %}">Dashboard</a>
+                <a class="{% if '/tasks/create/' in request.path %}active{% endif %}" href="{% url 'tasks:task_create' %}">Create Task</a>
+                <a href="/admin/">Admin Panel</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                {% if user.is_authenticated %}
+                    Signed in as <strong>{{ user.username }}</strong>
+                    <form method="post" action="{% url 'logout' %}" style="margin-top:8px;">
+                        {% csrf_token %}
+                        <button class="btn secondary" type="submit">Logout</button>
+                    </form>
+                {% else %}
+                    <a class="btn" href="{% url 'login' %}">Login</a>
+                {% endif %}
+            </div>
+        </aside>
+
+        <main class="content-wrap">
+            <button class="btn mobile-menu secondary" type="button" id="menuToggle">Menu</button>
+            <header class="topbar">
+                <h2 class="brand">{% block page_title %}Workspace{% endblock %}</h2>
+                <div class="actions">
+                    <a class="btn" href="{% url 'tasks:task_create' %}">+ New Task</a>
+                </div>
+            </header>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            const toggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            if (!toggle || !sidebar) return;
+            toggle.addEventListener('click', function () {
+                sidebar.classList.toggle('open');
+            });
+        })();
+    </script>
 </body>
 </html>
