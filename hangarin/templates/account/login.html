@@ -1,11 +1,13 @@
 {% load socialaccount %}
 {% load static %}
+{% load pwa %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <title>Hangarin - Sign In</title>
+        {% progressive_web_app_meta %}
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
