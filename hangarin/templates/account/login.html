@@ -1,0 +1,617 @@
+{% load socialaccount %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>Hangarin - Sign In</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            psuGreenDark: '#0f3f72',
+                            psuGreen: '#1b6aa8',
+                            psuGreenLight: '#3aa2d4',
+                        },
+                    },
+                },
+            };
+        </script>
+        <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <style>
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+
+                body {
+                        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        overflow: hidden;
+                    background: linear-gradient(to bottom right, #0f3f72, #3aa2d4);
+                        background-attachment: fixed;
+                }
+                
+                @media (max-width: 1024px) {
+                    body {
+                        background-image: url('{% static "img/PSU-bg.jpg" %}') !important;
+                        background-size: cover !important;
+                        background-position: center !important;
+                        background-attachment: fixed !important;
+                        background-color: transparent !important;
+                    }
+                    body::before {
+                        content: '';
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0, 0, 0, 0.55);
+                        pointer-events: none;
+                        z-index: 0;
+                    }
+                }
+
+        /* Left panel */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: white;
+        }
+        .left-panel img.logo {
+            width: 110px;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+        .left-panel h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+        .left-panel p {
+            font-size: 1.05rem;
+            opacity: 0.85;
+            margin-top: 0.5rem;
+            text-align: center;
+            max-width: 320px;
+        }
+
+        /* Right panel (form area) */
+        .right-panel {
+            width: 460px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 3rem;
+            box-shadow: -10px 0 40px rgba(0,0,0,0.15);
+        }
+        .form-box { width: 100%; }
+
+        .form-box h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a3c6e;
+            margin-bottom: 0.3rem;
+        }
+        .form-box .subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 1.8rem;
+        }
+
+        /* Tab pills */
+        .tab-pills {
+            display: flex;
+            background: #f1f5fb;
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 1.5rem;
+        }
+        .tab-pills a {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #888;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .tab-pills a.active {
+            background: #fff;
+            color: #1a3c6e;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Social buttons */
+        .social-btns { display: flex; gap: 10px; margin-bottom: 1.2rem; }
+        .social-btns a {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1.5px solid #e0e0e0;
+            color: #444;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .social-btns a:hover { background: #f5f5f5; border-color: #bbb; }
+        .social-btns a .fa-google { color: #DB4437; }
+        .social-btns a .fa-github { color: #333; }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #aaa;
+            font-size: 0.82rem;
+            margin-bottom: 1.2rem;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e5e5;
+        }
+
+        /* Form inputs */
+        .input-group-icon {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .input-group-icon i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+        .input-group-icon input {
+            width: 100%;
+            padding: 11px 14px 11px 40px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+            color: #333;
+        }
+        .input-group-icon input:focus { border-color: #2d6bcd; }
+
+        .row-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.3rem;
+            font-size: 0.85rem;
+        }
+        .row-between label { display: flex; align-items: center; gap: 6px; color: #555; cursor: pointer; }
+        .row-between a { color: #2d6bcd; text-decoration: none; }
+        .row-between a:hover { text-decoration: underline; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #1a3c6e, #2d6bcd);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+        .btn-submit:hover { opacity: 0.92; }
+
+        .google-auth-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 16px;
+            background: #ffffff;
+            border: 1.5px solid #d7e4f5;
+            border-radius: 12px;
+            color: #1f2937;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+        }
+
+        .google-auth-btn:hover {
+            background: #f8faff;
+            border-color: #4285f4;
+            box-shadow: 0 2px 10px rgba(66, 133, 244, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .google-auth-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, #fff 0 24%, transparent 25%),
+                        conic-gradient(#ea4335 0 25%, #fbbc05 25% 50%, #34a853 50% 75%, #4285f4 75% 100%);
+            box-shadow: inset 0 0 0 3px rgba(255,255,255,.92);
+            flex: 0 0 auto;
+        }
+
+        .google-auth-mark::after {
+            content: 'G';
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            transform: translateY(-0.5px);
+            text-shadow: 0 1px 2px rgba(0,0,0,.2);
+        }
+
+        .alert-danger {
+            background: #fff0f0;
+            border: 1px solid #f5c6cb;
+            color: #a94442;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        /* tab content visibility */
+        .tab-pane { display: none; }
+        .tab-pane.show { display: block; }
+
+        @media (max-width: 1024px) {
+            .left-panel { display: none; }
+            .right-panel { width: 100%; box-shadow: none; padding: 2rem 1.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            body { overflow-y: auto; }
+            .left-panel { display: none; }
+            .right-panel { width: 100%; box-shadow: none; }
+        }
+
+        @media (max-width: 480px) {
+            .form-box h2 { font-size: 1.3rem; }
+            .form-box .subtitle { font-size: 0.8rem; margin-bottom: 1rem; }
+        }
+
+        .form-panel {
+            transition: opacity 560ms cubic-bezier(.22, .61, .36, 1),
+                        transform 560ms cubic-bezier(.22, .61, .36, 1),
+                        filter 560ms cubic-bezier(.22, .61, .36, 1);
+            will-change: opacity, transform, filter;
+        }
+
+        .panel-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1) !important;
+            filter: blur(0);
+            pointer-events: auto;
+        }
+
+        .panel-pre-enter,
+        .panel-exit-down {
+            opacity: 0;
+            transform: translateY(32px) scale(.985) !important;
+            filter: blur(1px);
+            pointer-events: none;
+        }
+        
+        /* Hide image background on mobile */
+        @media (max-width: 1024px) {
+            .image-bg-container { display: none !important; }
+        }
+    </style>
+    </head>
+    <body class="overflow-hidden bg-gradient-to-br from-psuGreenDark via-psuGreen to-psuGreenLight min-h-screen">
+    <section class="body-font min-h-screen flex items-center justify-center relative z-10">
+
+    <div class="container mx-auto flex flex-wrap items-center lg:items-stretch justify-center lg:justify-between px-4 lg:px-2 relative z-10">
+
+            <div class="image-bg-container sm:relative md:relative lg:relative w-full lg:w-[700px] h-[200px] sm:h-[300px] md:h-[400px] lg:h-[700px] mb-4 sm:mb-6 md:mb-8 lg:mb-0 overflow-hidden rounded-3xl shadow-2xl">
+                <img src="{% static 'img/PSU-bg.jpg' %}" alt="Campus background" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/70"></div>
+
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6 z-10">
+                    <img src="{% static 'img/logo.png' %}" alt="Hangarin Logo" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full object-cover drop-shadow-xl mb-2 sm:mb-3 md:mb-4">
+                    <h1 class="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold drop-shadow-lg tracking-wide">Hangarin</h1>
+                    <p class="mt-2 sm:mt-3 text-sky-100 text-xs sm:text-sm md:text-base lg:text-base max-w-xs sm:max-w-sm md:max-w-md leading-relaxed">
+                        Task &amp; To-Do Manager built with Django
+                    </p>
+                </div>
+            </div>
+
+            <div class="relative w-full lg:w-[500px] lg:h-[700px]">
+            <div id="authFormShell" class="relative w-full min-h-[640px] lg:min-h-0 lg:h-full overflow-hidden">
+            <div id="loginFormWrapper" class="form-panel panel-visible absolute top-0 left-0 right-0 lg:inset-0 lg:h-full w-full bg-slate-50/95 backdrop-blur-sm rounded-3xl py-6 md:py-10 px-5 md:px-10 flex flex-col shadow-2xl z-20" style="min-height: auto;">
+                <div class="space-y-6">
+                    <h2 class="text-slate-900 text-xl sm:text-2xl lg:text-3xl text-center font-bold">Welcome back</h2>
+                    <p class="text-slate-500 text-xs sm:text-sm lg:text-base text-center">Sign in to your Hangarin account</p>
+
+                    <div>
+                        <a href="{% provider_login_url 'google' %}"
+                           class="google-auth-btn w-full inline-flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-white/80 px-4 py-2.5 text-xs sm:text-sm font-semibold text-blue-800 hover:bg-blue-50 hover:border-blue-300 transition duration-200">
+                            <span class="google-auth-mark" aria-hidden="true"></span>
+                            <span>Continue with Google</span>
+                        </a>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-slate-200"></div>
+                        </div>
+                        <div class="relative flex justify-center text-xs lg:text-sm">
+                            <span class="px-3 bg-slate-50 text-slate-400">or sign in with email</span>
+                        </div>
+                    </div>
+
+                    <form method="post" action="{% url 'account_login' %}" class="space-y-4">
+                        {% csrf_token %}
+
+                        <div>
+                            <label for="id_login" class="block text-xs font-medium text-slate-600 mb-2">Email or Username</label>
+                            <input id="id_login" name="login" type="text" required
+                                   class="block w-full rounded-xl border border-slate-200 bg-slate-100/80 px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 outline-none transition"
+                                   placeholder="your.email@psu.edu.ph" />
+                        </div>
+
+                        <div>
+                            <label for="id_password" class="block text-xs font-medium text-slate-600 mb-2">Password</label>
+                            <div class="relative">
+                                <input id="id_password" name="password" type="password" required
+                                       class="block w-full rounded-xl border border-slate-200 bg-slate-100/80 px-3 py-2.5 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 outline-none transition"
+                                       placeholder="••••••••" />
+                                <button type="button" onclick="togglePasswordVisibility('id_password', 'loginEyeIcon')"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <svg id="loginEyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs gap-2">
+                            <label class="inline-flex items-center gap-2 text-slate-600 cursor-pointer">
+                                <input id="loginCheck" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" checked>
+                                <span>Remember me</span>
+                            </label>
+                            <a href="{% url 'account_reset_password' %}" class="text-blue-700 hover:text-blue-800 hover:underline whitespace-nowrap">Forgot password?</a>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+                                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="group relative w-full flex justify-center items-center rounded-xl border border-transparent bg-blue-600 text-white text-sm font-semibold py-2.5 shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
+                            <span>Sign In</span>
+                        </button>
+                    </form>
+
+                    <div class="border-t border-slate-200 pt-6">
+                        <div class="relative flex justify-center text-xs lg:text-sm">
+                            <span class="px-3 bg-slate-50 text-slate-500">Don't have an account?</span>
+                        </div>
+                        <div class="mt-4 flex flex-col gap-3">
+                            <button type="button" id="showSignupBtn"
+                                    class="w-full inline-flex justify-center rounded-xl border border-blue-700/90 text-blue-800 text-sm font-semibold py-2.5 bg-transparent hover:bg-blue-50 hover:scale-[1.01] transition duration-200">
+                                Create account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="signupFormWrapper" class="form-panel panel-pre-enter absolute top-0 left-0 right-0 lg:inset-0 lg:h-full w-full bg-slate-50/95 backdrop-blur-sm rounded-3xl py-6 md:py-10 px-5 md:px-10 flex flex-col shadow-2xl overflow-y-auto z-30">
+                <div class="space-y-6 w-full max-w-full">
+                    <h2 class="text-slate-900 text-xl sm:text-2xl lg:text-3xl text-center font-bold">Create your account</h2>
+                    <p class="text-slate-500 text-xs sm:text-sm lg:text-base text-center">Sign up with your email</p>
+
+                <form method="post" action="{% url 'account_signup' %}" class="space-y-4 w-full">
+                    {% csrf_token %}
+
+                    <div class="space-y-4 w-full">
+                        <div>
+                            <label for="signupUsername" class="block text-xs font-medium text-slate-600 mb-2">Username *</label>
+                            <input id="signupUsername" name="username" type="text" required
+                                   class="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 outline-none transition"
+                                   placeholder="your.username" />
+                        </div>
+                        <div>
+                            <label for="signupEmail" class="block text-xs font-medium text-slate-600 mb-2">Email Address *</label>
+                            <input id="signupEmail" name="email" type="email" required
+                                   class="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 outline-none transition"
+                                   placeholder="your.email@psu.edu.ph" />
+                        </div>
+                        <div>
+                            <label for="signupPassword" class="block text-xs font-medium text-slate-600 mb-2">Password *</label>
+                            <div class="relative">
+                                <input id="signupPassword" name="password1" type="password" required minlength="6"
+                                       class="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 outline-none transition"
+                                       placeholder="••••••••" />
+                                <button type="button" onclick="togglePasswordVisibility('signupPassword', 'signupEyeIcon')"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <svg id="signupEyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="mt-1 text-[11px] text-slate-400">Minimum 6 characters</p>
+                        </div>
+                        <div>
+                            <label for="signupConfirmPassword" class="block text-xs font-medium text-slate-600 mb-2">Confirm Password *</label>
+                            <div class="relative">
+                                <input id="signupConfirmPassword" name="password2" type="password" required
+                                       class="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 outline-none transition"
+                                       placeholder="••••••••" />
+                                <button type="button" onclick="togglePasswordVisibility('signupConfirmPassword', 'signupConfirmEyeIcon')"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <svg id="signupConfirmEyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center text-[10px] sm:text-xs text-slate-500 gap-1 w-full">
+                        <input id="terms" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded" required>
+                        <span>By creating an account you agree to our policies.</span>
+                    </div>
+
+                    <button type="submit" class="group relative w-full flex justify-center items-center rounded-xl border border-transparent bg-blue-600 text-white text-sm font-semibold py-2.5 shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
+                        <span>Sign Up</span>
+                    </button>
+                </form>
+
+                <div class="border-t border-slate-200 pt-4 w-full">
+                    <div class="relative flex justify-center text-xs lg:text-sm">
+                        <span class="px-3 bg-slate-50 text-slate-500">Already have an account?</span>
+                    </div>
+
+                    <div class="mt-2 w-full">
+                        <button type="button" id="showLoginBtn"
+                                class="w-full inline-flex justify-center rounded-xl border border-blue-700/90 text-blue-800 text-sm font-semibold py-2.5 bg-transparent hover:bg-blue-50 hover:scale-[1.01] transition duration-200">
+                            Back to Login
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+            </div>
+
+      </div>
+
+    </section>
+
+    <script>
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />';
+            }
+        }
+
+        const loginFormWrapper = document.getElementById('loginFormWrapper');
+        const signupFormWrapper = document.getElementById('signupFormWrapper');
+        const showSignupBtn = document.getElementById('showSignupBtn');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const authFormShell = document.getElementById('authFormShell');
+
+        const transitionMs = 560;
+        const revealDelayMs = 120;
+        let isAnimating = false;
+
+        function syncShellHeight() {
+            if (!authFormShell || !signupFormWrapper || !loginFormWrapper) return;
+
+            const showingSignup = signupFormWrapper.classList.contains('panel-visible');
+            if (window.innerWidth < 1024) {
+                const active = showingSignup ? signupFormWrapper : loginFormWrapper;
+                authFormShell.style.minHeight = `${active.scrollHeight}px`;
+                authFormShell.style.height = '';
+            } else {
+                authFormShell.style.minHeight = '700px';
+                authFormShell.style.height = '700px';
+            }
+        }
+
+        function showSignupForm() {
+            if (!signupFormWrapper || !loginFormWrapper) return;
+            if (isAnimating || signupFormWrapper.classList.contains('panel-visible')) return;
+
+            isAnimating = true;
+            loginFormWrapper.classList.remove('panel-visible');
+            loginFormWrapper.classList.add('panel-exit-down');
+
+            signupFormWrapper.classList.remove('panel-visible', 'panel-exit-down');
+            signupFormWrapper.classList.add('panel-pre-enter');
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    signupFormWrapper.classList.remove('panel-pre-enter');
+                    signupFormWrapper.classList.add('panel-visible');
+                }, revealDelayMs);
+            });
+
+            setTimeout(() => {
+                syncShellHeight();
+                isAnimating = false;
+            }, transitionMs + revealDelayMs);
+        }
+
+        function showLoginForm() {
+            if (!signupFormWrapper || !loginFormWrapper) return;
+            if (isAnimating || loginFormWrapper.classList.contains('panel-visible')) return;
+
+            isAnimating = true;
+            signupFormWrapper.classList.remove('panel-visible');
+            signupFormWrapper.classList.add('panel-exit-down');
+
+            loginFormWrapper.classList.remove('panel-visible', 'panel-exit-down');
+            loginFormWrapper.classList.add('panel-pre-enter');
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    loginFormWrapper.classList.remove('panel-pre-enter');
+                    loginFormWrapper.classList.add('panel-visible');
+                }, revealDelayMs);
+            });
+
+            setTimeout(() => {
+                syncShellHeight();
+                isAnimating = false;
+            }, transitionMs + revealDelayMs);
+        }
+
+        if (showSignupBtn && signupFormWrapper && loginFormWrapper) {
+            showSignupBtn.addEventListener('click', showSignupForm);
+        }
+
+        if (showLoginBtn && signupFormWrapper && loginFormWrapper) {
+            showLoginBtn.addEventListener('click', showLoginForm);
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            if (window.location.hash === '#signup') {
+                showSignupForm();
+            }
+            syncShellHeight();
+        });
+
+        window.addEventListener('resize', syncShellHeight);
+    </script>
+    </body>
+    </html>

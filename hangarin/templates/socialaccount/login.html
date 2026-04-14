@@ -1,0 +1,279 @@
+{% load i18n %}
+{% load socialaccount %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Confirm Sign In</title>
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --em:       #2b7fbd;
+            --em-dark:  #0f3f72;
+            --em-soft:  #d9e9f7;
+            --ink:      #0e325a;
+            --muted:    #58779a;
+            --line:     #cfdff1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            background: url("{% static 'img/PSU-bg.jpg' %}") center/cover no-repeat fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        /* Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg,
+                rgba(15,63,114,.72) 0%,
+                rgba(0,0,0,.50) 100%);
+            z-index: 0;
+        }
+
+        /* Card */
+        .confirm-card {
+            position: relative;
+            z-index: 1;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.28);
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            animation: popIn .22s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(.88) translateY(16px); opacity: 0; }
+            to   { transform: scale(1)   translateY(0);    opacity: 1; }
+        }
+
+        /* Logo */
+        .logo-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 3px solid var(--em-soft);
+            overflow: hidden;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 16px rgba(43,127,189,.2);
+        }
+        .logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* App name chip */
+        .app-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--em-soft);
+            color: var(--em-dark);
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+        .app-chip span { width: 6px; height: 6px; border-radius: 50%; background: var(--em); }
+
+        h4 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 8px;
+            letter-spacing: -.2px;
+        }
+
+        .sub {
+            font-size: .88rem;
+            color: var(--muted);
+            line-height: 1.55;
+            margin-bottom: 28px;
+        }
+        .sub strong { color: var(--em-dark); font-weight: 600; }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #ccc;
+            font-size: .75rem;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
+        /* Google button */
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 13px 20px;
+            background: #4285F4;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .93rem;
+            font-weight: 600;
+            text-decoration: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: background .18s, transform .12s, box-shadow .18s;
+            box-shadow: 0 4px 14px rgba(66,133,244,.35);
+            margin-bottom: 12px;
+        }
+        .btn-google:hover {
+            background: #3367d6;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(66,133,244,.4);
+        }
+        .btn-google:active { transform: translateY(0); }
+        .btn-google i { font-size: 1rem; }
+
+        .google-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, #fff 0 24%, transparent 25%),
+                        conic-gradient(#ea4335 0 25%, #fbbc05 25% 50%, #34a853 50% 75%, #4285f4 75% 100%);
+            box-shadow: inset 0 0 0 3px rgba(255,255,255,.92);
+            flex: 0 0 auto;
+        }
+
+        .google-mark::after {
+            content: 'G';
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            transform: translateY(-.5px);
+            text-shadow: 0 1px 2px rgba(0,0,0,.2);
+        }
+
+        /* Cancel button */
+        .btn-cancel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--muted);
+            border: 1.5px solid var(--line);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .88rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background .15s, border-color .15s, color .15s;
+        }
+        .btn-cancel:hover {
+            background: var(--em-soft);
+            border-color: var(--em);
+            color: var(--em-dark);
+        }
+
+        /* Security note */
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 20px;
+            font-size: .74rem;
+            color: #b0c4bc;
+        }
+        .security-note i { color: var(--em); font-size: .78rem; }
+
+        /* ── MOBILE ── */
+        @media (max-width: 480px) {
+            .confirm-card {
+                padding: 32px 24px;
+                border-radius: 16px;
+            }
+            h4 { font-size: 1.2rem; }
+        }
+
+        @media (max-width: 360px) {
+            .confirm-card { padding: 28px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="confirm-card">
+
+        <div class="logo-wrap">
+            <img src="{% static 'img/logo.png' %}" alt="Hangarin Logo">
+        </div>
+
+        <div class="app-chip">
+            <span></span> Hangarin
+        </div>
+
+        <h4>Confirm Sign In</h4>
+        <p class="sub">
+            You're signing in using your<br>
+            <strong>{{ provider.name }}</strong> account.
+        </p>
+
+        <div class="divider">secure login</div>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-google">
+                <span class="google-mark" aria-hidden="true"></span>
+                Continue with {{ provider.name }}
+            </button>
+        </form>
+
+        <a href="{% url 'account_login' %}" class="btn-cancel">
+            <i class="fas fa-arrow-left" style="font-size:.8rem;"></i>
+            Cancel, go back
+        </a>
+
+        <div class="security-note">
+            <i class="fas fa-lock"></i>
+            Secured by django-allauth
+        </div>
+
+    </div>
+
+</body>
+</html>

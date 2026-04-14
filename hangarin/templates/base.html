@@ -1,0 +1,1040 @@
+{% load static %}
+{% load pwa %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<title>{% block title %}Hangarin{% endblock %}</title>
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+	<link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+	<link rel="stylesheet" href="{% static 'css/ready.css' %}">
+	<link rel="stylesheet" href="{% static 'css/demo.css' %}">
+	<link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+	{% progressive_web_app_meta %}
+	<style>
+		:root {
+			--hangarin-ink: #0e325a;
+			--hangarin-muted: #4d6b8c;
+			--hangarin-bg: #eef5fb;
+			--hangarin-surface: #ffffff;
+			--hangarin-accent: #0f3f72;
+			--hangarin-accent-2: #1b6aa8;
+			--hangarin-accent-3: #3aa2d4;
+			--hangarin-accent-soft: #d9e9f7;
+		}
+
+		body {
+			background: var(--hangarin-bg);
+			color: var(--hangarin-ink);
+		}
+
+		.main-header .logo-header {
+			background: linear-gradient(135deg, #0f3f72 0%, #1b6aa8 55%, #3aa2d4 100%);
+		}
+
+		.main-header .navbar-header {
+			background: linear-gradient(90deg, #f7fbff 0%, #e9f2fb 100%);
+			border-bottom: 1px solid #cdddf0;
+		}
+
+		.logo-header .logo {
+			color: #f8fffd !important;
+			font-weight: 700;
+			letter-spacing: .3px;
+		}
+
+		.topbar-nav .profile-pic,
+		.topbar-nav .profile-pic span {
+			color: #111111 !important;
+		}
+
+		.topbar-nav .profile-pic .img-circle {
+			border: 1px solid rgba(255, 255, 255, .45);
+		}
+
+		.dropdown-menu.dropdown-user {
+			background: linear-gradient(180deg, #0f3f72 0%, #1b5f98 100%);
+			border: 1px solid rgba(255, 255, 255, .16);
+			padding: 6px 0;
+		}
+
+		.dropdown-menu.dropdown-user .user-box {
+			padding: 8px 12px;
+		}
+
+		.dropdown-menu.dropdown-user .dropdown-item,
+		.dropdown-menu.dropdown-user .dropdown-item i,
+		.dropdown-menu.dropdown-user .user-box h4,
+		.dropdown-menu.dropdown-user .user-box .text-muted {
+			color: #ffffff !important;
+		}
+
+		.dropdown-menu.dropdown-user .dropdown-item {
+			padding: 8px 14px;
+			line-height: 1.25;
+		}
+
+		.dropdown-menu.dropdown-user .dropdown-item:hover {
+			background: rgba(255, 255, 255, .14);
+		}
+
+		.dropdown-menu.dropdown-user .dropdown-divider {
+			border-color: rgba(255, 255, 255, .2);
+			margin: 6px 0;
+		}
+
+		.sidebar {
+			background: linear-gradient(180deg, #0f3f72 0%, #1b6aa8 50%, #3aa2d4 100%);
+		}
+
+		.sidebar .user {
+			border-bottom: 1px solid rgba(255, 255, 255, .1);
+		}
+
+		.sidebar .user .info a,
+		.sidebar .user .info .user-level,
+		.sidebar .nav .nav-item a,
+		.sidebar .nav .nav-item a i,
+		.sidebar .nav .nav-item a p {
+			color: #e9f3ff !important;
+		}
+
+		.sidebar .user .info a span,
+		.sidebar .user .info a .user-level,
+		.sidebar .user .info a .caret,
+		.sidebar .user .info .link-collapse,
+		.sidebar .user .info .collapse a,
+		.sidebar .user .info .collapse a .link-collapse {
+			color: #ffffff !important;
+			opacity: 1 !important;
+		}
+
+		.sidebar .nav .nav-item a {
+			border-radius: 10px;
+			margin: 4px 8px;
+			transition: all .2s ease;
+		}
+
+		.sidebar .nav .nav-item a:hover,
+		.sidebar .nav .nav-item.active a {
+			background: rgba(255, 255, 255, .22);
+			transform: translateX(2px);
+		}
+
+		.main-panel {
+			background:
+				radial-gradient(circle at 8% 8%, rgba(27, 106, 168, .14), transparent 34%),
+				radial-gradient(circle at 94% 6%, rgba(58, 162, 212, .16), transparent 30%),
+				var(--hangarin-bg);
+		}
+
+		.page-title {
+			color: #0f3f72;
+			font-weight: 800;
+			letter-spacing: .2px;
+		}
+
+		.card {
+			background: var(--hangarin-surface);
+			border: 1px solid #d7e3f2;
+			border-radius: 14px;
+			box-shadow: 0 10px 24px rgba(18, 57, 102, .10);
+		}
+
+		.card .card-header {
+			border-bottom: 1px solid #e1ebf7;
+		}
+
+		.card .card-title {
+			color: #154a82;
+			font-weight: 700;
+		}
+
+		.card.card-stats {
+			border: none;
+		}
+
+		.card.card-stats.card-warning {
+			background: linear-gradient(135deg, #0f3f72 0%, #2b7fbd 100%);
+		}
+
+		.card.card-stats.card-success {
+			background: linear-gradient(135deg, #154a82 0%, #3aa2d4 100%);
+		}
+
+		.card.card-stats.card-danger {
+			background: linear-gradient(135deg, #123f70 0%, #2678b4 100%);
+		}
+
+		.card.card-stats.card-primary {
+			background: linear-gradient(135deg, #0f3f72 0%, #3aa2d4 100%);
+		}
+
+		.card.card-stats .card-category,
+		.card.card-stats .card-title,
+		.card.card-stats i {
+			color: #ffffff !important;
+		}
+
+		.table thead th {
+			background: #eaf2fb;
+			color: #154a82;
+			border-bottom: 1px solid #c9d9ee;
+		}
+
+		.table tbody tr:hover {
+			background: #f4f8fe;
+		}
+
+		.btn {
+			border-radius: 10px;
+			font-weight: 700;
+		}
+
+		.btn-primary {
+			background: #1b6aa8;
+			border-color: #1b6aa8;
+		}
+
+		.btn-primary:hover {
+			background: #0f4f87;
+			border-color: #0f4f87;
+		}
+
+		.btn-success {
+			background: #3aa2d4;
+			border-color: #3aa2d4;
+			color: #ffffff;
+		}
+
+		.btn-success:hover {
+			background: #1b6aa8;
+			border-color: #1b6aa8;
+		}
+
+		.btn-danger {
+			background: #ef4444;
+			border-color: #ef4444;
+		}
+
+		.badge-primary {
+			background: #1b6aa8;
+		}
+
+		.mobile-header-actions,
+		.mobile-search-panel,
+		.sidebar-backdrop {
+			display: none;
+		}
+
+		.mobile-sidebar-toggle {
+			display: none;
+		}
+
+		.mobile-icon-btn {
+			appearance: none;
+			border: 0;
+			background: transparent;
+			color: #e9f3ff;
+			width: auto;
+			height: auto;
+			padding: 6px;
+			border-radius: 8px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			box-shadow: none;
+			text-decoration: none;
+		}
+
+		.mobile-icon-btn:hover,
+		.mobile-icon-btn:focus {
+			background: rgba(255, 255, 255, .16);
+			color: #ffffff;
+		}
+
+		.mobile-profile-pic {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0;
+			background: transparent;
+			margin-left: 6px;
+		}
+
+		.mobile-profile-pic img {
+			width: 30px;
+			height: 30px;
+			border-radius: 999px;
+			object-fit: cover;
+			border: 0;
+			vertical-align: middle;
+		}
+
+		.logo-header .brand-group {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.mobile-icon-btn .notification {
+			top: -3px;
+			right: -3px;
+		}
+
+		.mobile-search-panel {
+			padding: 0 12px 12px;
+		}
+
+		.mobile-search-panel .input-group {
+			border-radius: 999px;
+			overflow: hidden;
+			box-shadow: 0 8px 22px rgba(0, 0, 0, .12);
+		}
+
+		.mobile-search-panel .form-control {
+			border: 0;
+			box-shadow: none;
+		}
+
+		.mobile-search-panel .input-group-text {
+			border: 0;
+			background: #ffffff;
+			color: #1b6aa8;
+		}
+
+		@media (max-width: 991.98px) {
+			.main-header {
+				position: sticky;
+				top: 0;
+				z-index: 1050;
+			}
+
+			.main-header .logo-header {
+				width: 100%;
+				display: flex !important;
+				flex-direction: row !important;
+				align-items: center;
+				justify-content: space-between !important;
+				flex-wrap: nowrap !important;
+				gap: 12px;
+				padding: 10px 12px;
+			}
+
+			.brand-group {
+				display: flex;
+				align-items: center;
+				justify-content: flex-start !important;
+				gap: 10px;
+				min-width: 0;
+				flex: 1 1 auto;
+			}
+
+			.brand-home {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.mobile-sidebar-toggle {
+				display: inline-flex;
+				flex: 0 0 auto;
+				position: static !important;
+				left: auto !important;
+				right: auto !important;
+				top: auto !important;
+				height: auto !important;
+				opacity: 1 !important;
+				z-index: 2;
+			}
+
+			.mobile-sidebar-toggle i {
+				font-size: 20px;
+				line-height: 1;
+			}
+
+			.main-header .logo-header .logo {
+				min-width: 0;
+				white-space: nowrap;
+				margin: 0 !important;
+			}
+
+			.navbar-toggler.sidenav-toggler:not(.mobile-sidebar-toggle),
+			.topbar-toggler.more,
+			.main-header .navbar-header {
+				display: none !important;
+			}
+
+			.mobile-header-actions {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin-left: auto;
+				flex: 0 0 auto;
+				min-height: 32px;
+			}
+
+			.mobile-header-actions .mobile-dropdown,
+			.mobile-header-actions .mobile-search-toggle {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.mobile-header-actions .mobile-icon-btn {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 24px;
+				height: 24px;
+				line-height: 1;
+				padding: 0;
+			}
+
+			.mobile-header-actions .mobile-icon-btn i {
+				font-size: 20px;
+				line-height: 1;
+			}
+
+			.mobile-header-actions .notification {
+				top: -6px;
+				right: -9px;
+			}
+
+			.mobile-header-actions .dropdown-menu {
+				min-width: 220px;
+				background: linear-gradient(180deg, #0f3f72 0%, #1b5f98 100%);
+				border: 1px solid rgba(255, 255, 255, .18);
+				padding: 6px 0;
+			}
+
+			.mobile-header-actions .dropdown-menu .dropdown-item,
+			.mobile-header-actions .dropdown-menu .dropdown-item i,
+			.mobile-header-actions .dropdown-menu .dropdown-title,
+			.mobile-header-actions .dropdown-menu .notif-content .block,
+			.mobile-header-actions .dropdown-menu .notif-content .time {
+				color: #ffffff !important;
+			}
+
+			.mobile-header-actions .dropdown-menu .dropdown-item {
+				padding: 8px 12px;
+				line-height: 1.25;
+			}
+
+			.mobile-header-actions .dropdown-menu .dropdown-item:hover {
+				background: rgba(255, 255, 255, .12);
+			}
+
+			.mobile-header-actions .dropdown-menu .dropdown-divider {
+				border-color: rgba(255, 255, 255, .18);
+				margin: 6px 0;
+			}
+
+			.mobile-header-actions .notif-box {
+				padding: 0;
+			}
+
+			.mobile-header-actions .notif-box .dropdown-title {
+				padding: 8px 12px;
+				font-size: 13px;
+			}
+
+			.mobile-header-actions .notif-box .notif-center a {
+				padding: 8px 12px;
+			}
+
+			.mobile-header-actions .notif-box .notif-center {
+				max-height: 220px;
+				overflow-y: auto;
+			}
+
+			.main-panel .content {
+				margin-top: 8px !important;
+				padding-top: 8px !important;
+			}
+
+			.sidebar {
+				display: block !important;
+				position: fixed;
+				top: 0;
+				left: 0;
+				height: 100vh;
+				width: 280px;
+				max-width: 82vw;
+				transform: translateX(-100%) !important;
+				transition: transform .25s ease;
+				z-index: 2000;
+				box-shadow: 18px 0 40px rgba(0, 0, 0, .18);
+			}
+
+			body.mobile-sidebar-open {
+				overflow: hidden;
+			}
+
+			body.mobile-sidebar-open .sidebar {
+				transform: translateX(0) !important;
+			}
+
+			.sidebar-backdrop {
+				display: block;
+				position: fixed;
+				inset: 0;
+				background: rgba(15, 23, 42, .45);
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity .25s ease;
+				z-index: 1990;
+			}
+
+			body.mobile-sidebar-open .sidebar-backdrop {
+				opacity: 1;
+				pointer-events: auto;
+			}
+
+			.mobile-search-panel {
+				display: block;
+				max-height: 0;
+				opacity: 0;
+				overflow: hidden;
+				padding-top: 0;
+				padding-bottom: 0;
+				transition: max-height .22s ease, opacity .22s ease, padding .22s ease;
+			}
+
+			body.search-open .mobile-search-panel {
+				max-height: 84px;
+				opacity: 1;
+				padding-top: 0;
+				padding-bottom: 12px;
+			}
+
+			.main-panel {
+				padding: 0 10px !important;
+			}
+
+			.container-fluid {
+				padding-left: 12px;
+				padding-right: 12px;
+			}
+
+			.main-header .navbar-header {
+				flex-wrap: wrap;
+				padding: 8px 12px;
+			}
+
+			.navbar-header .container-fluid {
+				flex-wrap: wrap;
+			}
+
+			.navbar-left.navbar-form {
+				width: 100%;
+				margin: 10px 0 0;
+			}
+
+			.navbar-left.navbar-form .input-group {
+				width: 100%;
+			}
+
+			.navbar-nav.topbar-nav {
+				width: 100%;
+				justify-content: flex-end;
+			}
+
+			.content {
+				padding: 12px 10px;
+			}
+
+			.main-panel {
+				padding: 0 10px !important;
+			}
+
+			.card {
+				margin-bottom: 16px;
+			}
+
+			.table-responsive {
+				overflow-x: auto;
+			}
+
+			.card-header {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+			}
+		}
+
+		@media (max-width: 767.98px) {
+			.card-body > table {
+				display: block;
+				width: 100%;
+				overflow-x: auto;
+				-webkit-overflow-scrolling: touch;
+			}
+
+			.card-body > table thead,
+			.card-body > table tbody,
+			.card-body > table tr,
+			.card-body > table th,
+			.card-body > table td {
+				white-space: nowrap;
+			}
+
+			.d-inline-flex {
+				flex-wrap: wrap;
+				justify-content: center;
+			}
+
+			.form-group input,
+			.form-group select,
+			.form-group textarea {
+				width: 100%;
+			}
+		}
+
+		@media (max-width: 575.98px) {
+			.main-header .logo-header {
+				height: auto;
+				padding: 10px;
+			}
+
+			.logo-header .logo {
+				font-size: 16px;
+			}
+
+			.logo-header .logo img {
+				width: 26px;
+				height: 26px;
+			}
+
+			.navbar-header .navbar-nav .nav-item .nav-link {
+				padding: 6px 8px;
+			}
+
+			.page-title {
+				font-size: 18px;
+				margin-bottom: 14px;
+			}
+
+			.card .card-title {
+				font-size: 16px;
+			}
+
+			.card .card-body {
+				padding: 16px;
+			}
+
+			.table {
+				font-size: 13px;
+			}
+
+			.table td,
+			.table th {
+				white-space: nowrap;
+			}
+		}
+	</style>
+</head>
+<body>
+	{% with google_picture=request.user.socialaccount_set.all.0.extra_data.picture %}
+	<div class="wrapper">
+		<div class="main-header">
+			<div class="logo-header">
+				<div class="brand-group">
+					<button class="navbar-toggler mobile-sidebar-toggle mobile-icon-btn" type="button" onclick="toggleMobileSidebar(); return false;" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+						<i class="la la-bars"></i>
+					</button>
+					<a href="{% url 'dashboard-home' %}" class="logo" aria-label="Go to dashboard" style="display:flex; align-items:center; gap:8px;">
+						<img src="{% static 'img/logo.png' %}" alt="Hangarin Logo" style="width:32px; height:32px; object-fit:contain;">
+						Hangarin
+					</a>
+				</div>
+				<div class="mobile-header-actions">
+					<button type="button" class="mobile-icon-btn mobile-search-toggle" onclick="toggleMobileSearch(); return false;" aria-label="Search dashboard">
+						<i class="la la-search"></i>
+					</button>
+					<div class="dropdown hidden-caret mobile-dropdown">
+						<a class="mobile-icon-btn" href="#" id="mobileMessagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Messages">
+							<i class="la la-envelope"></i>
+						</a>
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="mobileMessagesDropdown">
+							<a class="dropdown-item" href="#">Action</a>
+							<a class="dropdown-item" href="#">Another action</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Something else here</a>
+						</div>
+					</div>
+					<div class="dropdown hidden-caret mobile-dropdown">
+						<a class="mobile-icon-btn" href="#" id="mobileNotificationsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+							<i class="la la-bell"></i>
+							<span class="notification">3</span>
+						</a>
+						<ul class="dropdown-menu notif-box dropdown-menu-right" aria-labelledby="mobileNotificationsDropdown">
+							<li>
+								<div class="dropdown-title">You have 4 new notification</div>
+							</li>
+							<li>
+								<div class="notif-center">
+									<a href="#">
+										<div class="notif-icon notif-primary"> <i class="la la-user-plus"></i> </div>
+										<div class="notif-content">
+											<span class="block">New user registered</span>
+											<span class="time">5 minutes ago</span>
+										</div>
+									</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="dropdown mobile-dropdown">
+						<a class="mobile-icon-btn mobile-profile-pic" href="#" id="mobileProfileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Profile">
+							{% if google_picture %}
+								<img src="{{ google_picture }}" alt="user-img" class="img-circle">
+							{% else %}
+								<img src="{% static 'img/profile.jpg' %}" alt="user-img" class="img-circle">
+							{% endif %}
+						</a>
+						<ul class="dropdown-menu dropdown-user dropdown-menu-right" aria-labelledby="mobileProfileDropdown">
+							<li>
+								<div class="user-box">
+									<div class="d-flex align-items-center">
+										<div class="flex-col u-img">
+											{% if google_picture %}
+												<img src="{{ google_picture }}" alt="user">
+											{% else %}
+												<img src="{% static 'img/profile.jpg' %}" alt="user">
+											{% endif %}
+										</div>
+										<div class="u-text">
+											<h4>{{ request.user.get_full_name|default:request.user.username }}</h4>
+											<p class="text-muted mb-0">Administrator</p>
+										</div>
+									</div>
+								</div>
+							</li>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#"><i class="fa fa-user"></i> My Profile</a>
+							<a class="dropdown-item" href="#"><i class="fa fa-cog"></i> Settings</a>
+							<div class="dropdown-divider"></div>
+							<form method="post" action="{% url 'logout' %}">
+								{% csrf_token %}
+								<button type="submit" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</button>
+							</form>
+						</ul>
+					</div>
+				</div>
+				<button class="topbar-toggler more"><i class="la la-ellipsis-v"></i></button>
+			</div>
+			<nav class="navbar navbar-header navbar-expand-lg">
+				<div class="container-fluid">
+					
+					<form class="navbar-left navbar-form nav-search mr-md-3" action="">
+						<div class="input-group">
+							<input type="text" placeholder="Search ..." class="form-control">
+							<div class="input-group-append">
+								<span class="input-group-text">
+									<i class="la la-search search-icon"></i>
+								</span>
+							</div>
+						</div>
+					</form>
+					<ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+						<li class="nav-item dropdown hidden-caret">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="la la-envelope"></i>
+							</a>
+							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<a class="dropdown-item" href="#">Action</a>
+								<a class="dropdown-item" href="#">Another action</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Something else here</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown hidden-caret">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="la la-bell"></i>
+								<span class="notification">3</span>
+							</a>
+							<ul class="dropdown-menu notif-box" aria-labelledby="navbarDropdown">
+								<li>
+									<div class="dropdown-title">You have 4 new notification</div>
+								</li>
+								<li>
+									<div class="notif-center">
+										<a href="#">
+											<div class="notif-icon notif-primary"> <i class="la la-user-plus"></i> </div>
+											<div class="notif-content">
+												<span class="block">
+													New user registered
+												</span>
+												<span class="time">5 minutes ago</span> 
+											</div>
+										</a>
+										<a href="#">
+											<div class="notif-icon notif-success"> <i class="la la-comment"></i> </div>
+											<div class="notif-content">
+												<span class="block">
+													Rahmad commented on Admin
+												</span>
+												<span class="time">12 minutes ago</span> 
+											</div>
+										</a>
+										<a href="#">
+											<div class="notif-img"> 
+												<img src="{% static 'img/profile2.jpg' %}" alt="Img Profile">
+											</div>
+											<div class="notif-content">
+												<span class="block">
+													Reza send messages to you
+												</span>
+												<span class="time">12 minutes ago</span> 
+											</div>
+										</a>
+										<a href="#">
+											<div class="notif-icon notif-danger"> <i class="la la-heart"></i> </div>
+											<div class="notif-content">
+												<span class="block">
+													Farrah liked Admin
+												</span>
+												<span class="time">17 minutes ago</span> 
+											</div>
+										</a>
+									</div>
+								</li>
+								<li>
+									<a class="see-all" href="javascript:void(0);"> <strong>See all notifications</strong> <i class="la la-angle-right"></i> </a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> {% if google_picture %}<img src="{{ google_picture }}" alt="user-img" width="36" class="img-circle">{% else %}<img src="{% static 'img/profile.jpg' %}" alt="user-img" width="36" class="img-circle">{% endif %}<span >{{ request.user.get_full_name|default:request.user.username }}</span></span> </a>
+							<ul class="dropdown-menu dropdown-user">
+								<li>
+									<div class="user-box">
+										<div class="d-flex align-items-center">
+											<div class="flex-col u-img">{% if google_picture %}<img src="{{ google_picture }}" alt="user">{% else %}<img src="{% static 'img/profile.jpg' %}" alt="user">{% endif %}</div>
+											<div class="u-text">
+												<h4>{{ request.user.get_full_name|default:request.user.username }}</h4>
+												<p class="text-muted mb-0">Administrator</p>
+											</div>
+										</div>
+									</div>
+								</li>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="#"><i class="fa fa-user"></i> My Profile</a>
+									<a class="dropdown-item" href="#"><i class="fa fa-cog"></i> Settings</a>
+									<div class="dropdown-divider"></div>
+									<form method="post" action="{% url 'logout' %}">
+										{% csrf_token %}
+										<button type="submit" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</button>
+									</form>
+								</ul>
+								<!-- /.dropdown-user -->
+							</li>
+						</ul>
+					</div>
+				</nav>
+				<div class="mobile-search-panel">
+					<form class="navbar-left navbar-form nav-search" action="">
+						<div class="input-group">
+							<input type="text" placeholder="Search ..." class="form-control">
+							<div class="input-group-append">
+								<button class="input-group-text" type="submit" aria-label="Search">
+									<i class="la la-search search-icon"></i>
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="sidebar-backdrop" aria-hidden="true"></div>
+			<div class="sidebar">
+				<div class="scrollbar-inner sidebar-wrapper">
+					<div class="user">
+						<div class="photo">
+							{% if google_picture %}
+								<img src="{{ google_picture }}">
+							{% else %}
+								<img src="{% static 'img/profile.jpg' %}">
+							{% endif %}
+						</div>
+						<div class="info">
+							<a class="" data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+								<span>
+										{{ request.user.get_full_name|default:request.user.username }}
+									<span class="user-level">Administrator</span>
+									<span class="caret"></span>
+								</span>
+							</a>
+							<div class="clearfix"></div>
+
+							<div class="collapse in" id="collapseExample" aria-expanded="true">
+								<ul class="nav">
+									<li>
+										<a href="#profile">
+											<span class="link-collapse">My Profile</span>
+										</a>
+									</li>
+									<li>
+										<a href="#edit">
+											<span class="link-collapse">Edit Profile</span>
+										</a>
+									</li>
+									<li>
+										<a href="#settings">
+											<span class="link-collapse">Settings</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<ul class="nav">
+						<li class="nav-item">
+							<a href="{% url 'dashboard-home' %}">
+								<i class="la la-dashboard"></i>
+								<p>Hangarin Dashboard</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{% url 'task-list' %}">
+								<i class="la la-tasks"></i>
+								<p>Tasks</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{% url 'subtask-list' %}">
+								<i class="la la-list"></i>
+								<p>Subtasks</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{% url 'note-list' %}">
+								<i class="la la-sticky-note"></i>
+								<p>Notes</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{% url 'category-list' %}">
+								<i class="la la-folder-open"></i>
+								<p>Categories</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{% url 'priority-list' %}">
+								<i class="la la-flag"></i>
+								<p>Priorities</p>
+							</a>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+			<div class="main-panel">
+			    {% block content %}
+                {% endblock %}
+
+                
+				<!--<footer class="footer">
+					<div class="container-fluid">
+						<nav class="pull-left">
+							<ul class="nav">
+								<li class="nav-item">
+									<a class="nav-link" href="http://www.themekita.com">
+										ThemeKita
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="#">
+										Help
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="https://themewagon.com/license/#free-item">
+										Licenses
+									</a>
+								</li>
+							</ul>
+						</nav>
+						<div class="copyright ml-auto">
+							2018, made with <i class="la la-heart heart text-danger"></i> by <a href="http://www.themekita.com">ThemeKita</a>
+						</div>				
+					</div>
+				</footer>
+			</div>
+		</div>
+	</div> -->
+	<!-- Modal -->
+	<div class="modal fade" id="modalUpdate" tabindex="-1" role="dialog" aria-labelledby="modalUpdatePro" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-primary">
+					<h6 class="modal-title"><i class="la la-frown-o"></i> Under Development</h6>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body text-center">									
+					<p>Currently the pro version of the <b>Ready Dashboard</b> Bootstrap is in progress development</p>
+					<p>
+					<b>We'll let you know when it's done</b></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endwith %}
+</body>
+<script src="{% static 'js/core/jquery.3.2.1.min.js' %}"></script>
+<script src="{% static 'js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js' %}"></script>
+<script src="{% static 'js/core/popper.min.js' %}"></script>
+<script src="{% static 'js/core/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/plugin/chartist/chartist.min.js' %}"></script>
+<script src="{% static 'js/plugin/chartist/plugin/chartist-plugin-tooltip.min.js' %}"></script>
+<script src="{% static 'js/plugin/bootstrap-notify/bootstrap-notify.min.js' %}"></script>
+<script src="{% static 'js/plugin/bootstrap-toggle/bootstrap-toggle.min.js' %}"></script>
+<script src="{% static 'js/plugin/jquery-mapael/jquery.mapael.min.js' %}"></script>
+<script src="{% static 'js/plugin/jquery-mapael/maps/world_countries.min.js' %}"></script>
+<script src="{% static 'js/plugin/chart-circle/circles.min.js' %}"></script>
+<script src="{% static 'js/plugin/jquery-scrollbar/jquery.scrollbar.min.js' %}"></script>
+<script src="{% static 'js/ready.min.js' %}"></script>
+<script>
+	(function () {
+		const body = document.body;
+		const sidebar = document.querySelector('.sidebar');
+		const sidebarBackdrop = document.querySelector('.sidebar-backdrop');
+		const searchPanel = document.querySelector('.mobile-search-panel');
+		const searchInput = searchPanel ? searchPanel.querySelector('input') : null;
+
+		window.toggleMobileSidebar = function () {
+			if (!sidebar) return;
+			const opening = !body.classList.contains('mobile-sidebar-open');
+			body.classList.toggle('mobile-sidebar-open');
+			if (opening) {
+				body.classList.remove('search-open');
+			}
+		};
+
+		window.toggleMobileSearch = function () {
+			body.classList.toggle('search-open');
+			body.classList.remove('mobile-sidebar-open');
+			if (body.classList.contains('search-open') && searchInput) {
+				setTimeout(function () {
+					searchInput.focus();
+				}, 50);
+			}
+		};
+
+		if (sidebarBackdrop) {
+			sidebarBackdrop.addEventListener('click', function () {
+				body.classList.remove('mobile-sidebar-open');
+			});
+		}
+	})();
+</script>
+</html>

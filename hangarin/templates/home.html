@@ -6,24 +6,17 @@
     <div class="container-fluid">
         <h4 class="page-title">Hangarin Dashboard</h4>
 
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="mb-2">Hangarin: Task &amp; To-Do Manager</h5>
-                        <p class="mb-1">
-                            The Hangarin is a simple web application built with Django that helps users organize
-                            their daily tasks, manage priorities, add notes, and break down large goals into smaller subtasks.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-md-3">
                 <div class="card card-stats card-warning">
-                    <div class="card-body">
+                    <div class="card-body position-relative">
+                        <a href="{% url 'task-add' %}"
+                           class="position-absolute"
+                           style="top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,.96); color: #065f46; font-size: 22px; font-weight: 800; line-height: 1; text-decoration: none; z-index: 5; box-shadow: 0 6px 14px rgba(0,0,0,.2); border: 1px solid rgba(6,95,70,.2); pointer-events: auto;"
+                           title="Add Task"
+                           aria-label="Add Task">
+                            +
+                        </a>
                         <div class="row">
                             <div class="col-5">
                                 <div class="icon-big text-center">

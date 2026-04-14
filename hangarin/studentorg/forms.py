@@ -1,5 +1,7 @@
 from django.forms import ModelForm
 from django import forms
+from datetime import datetime, time as dt_time
+from django.utils import timezone
 from .models import Task, SubTask, Note, Category, Priority
 
 
@@ -21,9 +23,27 @@ class StyledModelForm(ModelForm):
 
 
 class TaskForm(StyledModelForm):
+    deadline = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        input_formats=["%Y-%m-%d"],
+    )
+
     class Meta:
         model = Task
         fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        deadline_value = self.initial.get("deadline") or getattr(self.instance, "deadline", None)
+        if deadline_value:
+            self.initial["deadline"] = deadline_value.date()
+
+    def clean_deadline(self):
+        selected_date = self.cleaned_data["deadline"]
+        deadline_dt = datetime.combine(selected_date, dt_time.min)
+        if timezone.is_naive(deadline_dt) and timezone.is_aware(timezone.now()):
+            deadline_dt = timezone.make_aware(deadline_dt, timezone.get_current_timezone())
+        return deadline_dt
 
 
 class SubTaskForm(StyledModelForm):
